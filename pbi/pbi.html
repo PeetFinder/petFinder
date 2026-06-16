@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/petfinder/">
+  <script src="js/site.js"></script>
+  <title>PetFinder - Analytics Dashboard</title>
+  <link rel="icon" type="image/png" href="LOGO.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .pbi-embed-card {
+      overflow: hidden;
+    }
+
+    .pbi-embed-frame {
+      width: 100%;
+      min-height: 520px;
+      height: calc(100vh - 340px);
+      max-height: 900px;
+      border: 0;
+      border-radius: var(--radius-md);
+      display: block;
+      background: #f5f7f5;
+    }
+
+    @media (max-width: 767.98px) {
+      .pbi-embed-frame {
+        min-height: 420px;
+        height: 65vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg custom-navbar py-3 sticky-top">
+    <div class="container-fluid px-4 px-lg-5">
+      <a class="navbar-brand fw-bold fs-3 d-inline-flex align-items-center gap-2" href="index.html">
+        <img src="LOGO.png" alt="" class="brand-logo" width="34" height="34"><span>PetFinder</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#pbiNavbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-between" id="pbiNavbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html#main-page">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#report-page">Report Lost Pet</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#map-page">Community Map</a></li>
+          <li class="nav-item"><a class="nav-link active" href="pbi/pbi.html">Analytics</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+          <a href="index.html#main-page" class="btn btn-outline-secondary fw-bold px-3">Back to Home</a>
+          <a href="auth.html" class="btn btn-outline-sage fw-bold px-4" id="nav-auth-btn">Login / Register</a>
+          <div id="nav-notifications" class="nav-notifications d-none position-relative">
+            <button type="button" id="navNotifBellBtn" class="nav-notif-bell-btn" aria-label="Your Pet Alerts"
+              title="Your Pet Alerts" aria-expanded="false" aria-controls="navNotifDropdown">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span id="navNotifBellBadge" class="nav-notif-bell-badge" style="display: none;">0</span>
+            </button>
+            <div id="navNotifDropdown" class="nav-notif-dropdown" style="display: none;" role="dialog"
+              aria-label="Your Pet Alerts">
+              <div class="nav-notif-dropdown-header">
+                <h6 class="fw-bold mb-1" style="color: var(--primary-sage);">Your Pet Alerts</h6>
+                <p class="small text-muted mb-0">Private messages about pets you reported.</p>
+              </div>
+              <div id="ownerNotificationsList" class="owner-notifications-list"></div>
+            </div>
+          </div>
+          <div id="nav-account" class="nav-account d-none position-relative">
+            <button type="button" id="navUserBtn" class="nav-user" title="My Account" aria-label="My Account"
+              aria-expanded="false" aria-controls="navAccountDropdown">
+              <span id="nav-user-initials" class="nav-user-initials">U</span>
+            </button>
+            <div id="navAccountDropdown" class="nav-account-dropdown" style="display: none;" role="dialog"
+              aria-label="My Account">
+              <div class="nav-account-dropdown-header">
+                <h6 class="fw-bold mb-1" style="color: var(--primary-sage);">My Account</h6>
+                <p class="small text-muted mb-0">View and update your profile information.</p>
+              </div>
+              <div class="nav-account-dropdown-body">
+                <div id="navAccountViewMode">
+                  <div class="text-center mb-3">
+                    <div class="user-avatar-large mx-auto mb-2 nav-account-avatar" id="userAvatarLarge"></div>
+                  </div>
+                  <div class="profile-section mb-3 p-3 bg-light rounded">
+                    <label class="small fw-bold text-muted mb-2 d-block">FULL NAME</label>
+                    <p class="fw-semibold mb-0" id="displayUserName">--</p>
+                  </div>
+                  <div class="profile-section mb-3 p-3 bg-light rounded">
+                    <label class="small fw-bold text-muted mb-2 d-block">EMAIL ADDRESS</label>
+                    <p class="fw-semibold mb-0" id="displayUserEmail">--</p>
+                  </div>
+                  <div class="profile-section mb-3 p-3 bg-light rounded">
+                    <label class="small fw-bold text-muted mb-2 d-block">CONTACT NUMBER</label>
+                    <p class="fw-semibold mb-0" id="displayUserContact">--</p>
+                  </div>
+                  <div class="profile-section mb-3 p-3 bg-light rounded">
+                    <label class="small fw-bold text-muted mb-2 d-block">YOUR LOCATION</label>
+                    <p class="fw-semibold mb-0" id="displayUserLocation">--</p>
+                  </div>
+                  <button type="button" class="btn btn-sage fw-bold w-100 py-2" onclick="openMyAccountEditModal()">EDIT PROFILE</button>
+                </div>
+                <div id="navAccountEditMode" style="display: none;">
+                  <form id="myAccountEditForm" onsubmit="handleUpdateMyAccount(event)">
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold small">Full Name</label>
+                      <input id="editMyName" type="text" class="form-control py-2" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold small">Email Address</label>
+                      <input id="editMyEmail" type="email" class="form-control py-2" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold small">Contact Number</label>
+                      <input id="editMyContact" type="tel" class="form-control py-2"
+                        placeholder="09XX XXX XXXX" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold small">Your Location</label>
+                      <input id="editMyLocation" type="text" class="form-control py-2"
+                        placeholder="123 Sta. Cruz St., Barangay Pagaspas, Tanauan City" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                      <button type="submit" class="btn btn-sage fw-bold py-2">SAVE CHANGES</button>
+                      <button type="button" class="btn btn-outline-secondary fw-bold py-2"
+                        onclick="closeMyAccountEditModal()">CANCEL</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+
+    <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
+      <a href="index.html#main-page" class="hero-back-btn text-decoration-none" aria-label="Back to Home"
+        title="Back to Home">←</a>
+      <h1 class="display-5 fw-bold mb-2">PetFinder Analytics Dashboard</h1>
+      <p class="h4 fw-light mb-0">Explore lost pet trends, barangay activity, and community insights.</p>
+    </header>
+
+    <main class="custom-card p-3 p-md-4 my-4 pbi-embed-card">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 px-1">
+        <div>
+          <h4 class="fw-bold mb-1 section-title" style="color: var(--primary-sage);">Power BI Live Report</h4>
+          <p class="text-muted small mb-0">Interactive charts and statistics powered by Microsoft Power BI.</p>
+        </div>
+        <span class="badge btn-sage px-3 py-2 fw-bold" style="font-size: 11px;">LIVE DATA</span>
+      </div>
+      <iframe class="pbi-embed-frame shadow-sm" title="PetFinder Analytics Dashboard"
+        src="https://app.powerbi.com/view?r=eyJrIjoiYWI3ZGVlN2ItNzI5Ni00ZGFkLThkNTctYWRjOWNkNTcwOWUyIiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D"
+        allowfullscreen="true"></iframe>
+    </main>
+
+  </div>
+
+  <footer class="site-footer text-center py-4">
+    <div class="container-fluid px-4 px-lg-5">
+      <div class="d-flex flex-wrap justify-content-center gap-4 small fw-semibold mb-2">
+        <a href="index.html#terms-page" class="text-decoration-none text-muted mx-1">Terms of Use</a>
+        <a href="index.html#privacy-page" class="text-decoration-none text-muted mx-1">Privacy Policy</a>
+      </div>
+      <p class="small text-muted mb-0 mt-2">&copy; 2026 PetFinder Hub System. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  <script src="js/api.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

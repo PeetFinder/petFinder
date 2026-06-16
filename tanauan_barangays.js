@@ -1,4 +1,3 @@
-/* All 48 barangays of Tanauan City, Batangas — coordinates for map markers */
 window.TANAUAN_BARANGAYS = {
   AlturaBata: { name: 'Altura Bata', lat: 14.125686, lng: 121.0769567 },
   AlturaMatanda: { name: 'Altura Matanda', lat: 14.1332282, lng: 121.0848914 },
@@ -50,7 +49,6 @@ window.TANAUAN_BARANGAYS = {
   Wawa: { name: 'Wawa', lat: 14.0640812, lng: 121.0762634 }
 };
 
-/* Legacy incident pin keys used by PetFinder reports */
 window.TANAUAN_PIN_ALIASES = {
   Poblacion: 'Poblacion6',
   TanauanPlaza: 'Poblacion6',

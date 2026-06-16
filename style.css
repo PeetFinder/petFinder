@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
-/* --- CUSTOM COLOR PALETTE & MODERN UI DESIGN --- */
 :root {
   --primary-sage: #6E8E76;
   --secondary-mint: #B5C99A;
@@ -107,7 +106,6 @@ h1, h2, h3, h4, h5, h6,
   letter-spacing: 0.06em;
 }
 
-/* Navbar Styling — full-width edge-to-edge */
 .custom-navbar {
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(10px);
@@ -120,7 +118,6 @@ h1, h2, h3, h4, h5, h6,
   right: 0;
 }
 
-/* Footer — full-width edge-to-edge, pinned to bottom on short pages */
 .site-footer {
   width: 100%;
   max-width: 100%;
@@ -158,7 +155,6 @@ h1, h2, h3, h4, h5, h6,
   font-weight: 600;
 }
 
-/* Containers and Custom Cards */
 .custom-card {
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid rgba(110, 142, 118, 0.12);
@@ -273,7 +269,6 @@ h1, h2, h3, h4, h5, h6,
   display: none;
 }
 
-/* Compact small banner shown above the hero when user is active */
 .small-user-banner {
   margin: 0 0 1rem 0;
   padding: 8px 14px;
@@ -302,7 +297,6 @@ h1, h2, h3, h4, h5, h6,
   box-shadow: 0 10px 24px rgba(110, 142, 118, 0.12);
 }
 
-/* Hero Section Gradient Dynamic */
 .hero-banner {
   background: linear-gradient(135deg, var(--bg-olive-mid) 0%, var(--primary-sage) 55%, #8fa895 100%);
   color: #ffffff !important;
@@ -343,7 +337,6 @@ h1, h2, h3, h4, h5, h6,
   transform: translateX(-2px);
 }
 
-/* Custom Styled Buttons */
 .btn-sage {
   background-color: var(--primary-sage);
   color: #ffffff;
@@ -383,7 +376,6 @@ h1, h2, h3, h4, h5, h6,
   color: #ffffff;
 }
 
-/* Input Form Enhancements */
 .form-control,
 .form-select {
   border: 1.5px solid #D0D7D1;
@@ -396,7 +388,6 @@ h1, h2, h3, h4, h5, h6,
   box-shadow: 0 0 0 0.25rem rgba(110, 142, 118, 0.25);
 }
 
-/* Accordion Custom Styling for FAQs */
 .accordion-item {
   border: none;
   margin-bottom: 10px;
@@ -416,7 +407,6 @@ h1, h2, h3, h4, h5, h6,
   border-color: rgba(110, 142, 118, 0.25);
 }
 
-/* Media Box Placeholders */
 .pet-img-box {
   width: 100%;
   height: 160px;
@@ -455,7 +445,6 @@ h1, h2, h3, h4, h5, h6,
   justify-content: center;
 }
 
-/* Section Switching Core Mechanics */
 .page-section {
   display: none;
 }
@@ -486,7 +475,6 @@ body.on-info-page .custom-navbar .navbar-brand {
   }
 }
 
-/* Interactive Element Styles */
 .map-grid-button {
   background: #ffffff;
   border: 1.5px solid #E5EAE6;
@@ -503,7 +491,6 @@ body.on-info-page .custom-navbar .navbar-brand {
   background-color: rgba(110, 142, 118, 0.05);
 }
 
-/* Vector Map Graphics Design Styles */
 .vector-map-bg {
   background-color: #EBF0EC;
   background-image:
@@ -584,7 +571,6 @@ body.on-info-page .custom-navbar .navbar-brand {
   margin-bottom: 1rem;
 }
 
-/* Personal Account Page Styles */
 .max-width-600 {
   max-width: 600px !important;
 }
@@ -639,7 +625,6 @@ body.on-info-page .custom-navbar .navbar-brand {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Account Management Page Styles */
 .account-users-table {
   border: 1px solid #E5EAE6;
   border-radius: 8px;
@@ -686,7 +671,6 @@ body.on-info-page .custom-navbar .navbar-brand {
   
 }
 
-/* Lost Pet Report Details Modal (View Details CRUD) */
 #petDetailsModal .my-account-box {
   max-height: 90vh;
   overflow-y: auto;
@@ -707,12 +691,10 @@ body.on-info-page .custom-navbar .navbar-brand {
   font-size: 2.5rem;
 }
 
-/* Hide Guest Dashboard Preview block on landing page */
 #landing-page > section.my-4 {
   display: none !important;
 }
 
-/* Hide navbar Login / Register on landing & auth pages (forms already on page) */
 .landing-nav-hidden,
 body.on-auth-page #nav-login-btn,
 body.on-auth-page #nav-register-btn,
@@ -722,18 +704,15 @@ body.on-landing-page #nav-register-btn {
   display: none !important;
 }
 
-/* Hide duplicate combined Login / Register when separate nav buttons exist */
 #nav-auth-btn.nav-combined-auth-hidden {
   display: none !important;
 }
 
-/* Hide Logout until user has logged in (and not on landing/auth) */
 #nav-auth-btn.nav-logout-hidden,
 #nav-account.nav-user-logout-hidden {
   display: none !important;
 }
 
-/* Navbar user account icon (restored via script.js) */
 #nav-account.nav-user-visible {
   display: inline-flex !important;
 }
@@ -742,7 +721,6 @@ body.on-landing-page #nav-register-btn {
   flex-shrink: 0;
 }
 
-/* Logout button beside user account icon */
 #nav-auth-btn.nav-logout-visible {
   display: inline-block !important;
 }
@@ -760,7 +738,6 @@ body.on-landing-page #nav-register-btn {
   order: 2;
 }
 
-/* Hide Account Management (Add User / User Directory) on homepage */
 #homepage-user-account-mount,
 .homepage-user-account-section,
 #main-page #homepage-user-account-mount main,
@@ -772,7 +749,6 @@ body.on-landing-page #nav-register-btn {
   display: none !important;
 }
 
-/* Landing page — prompt login after registration */
 .landing-login-notice {
   border-left: 5px solid var(--primary-sage);
   background: #ffffff !important;
@@ -786,7 +762,6 @@ body.on-landing-page #landing-page .landing-login-notice {
   display: block;
 }
 
-/* Map pin incidents CRUD */
 .map-pin-list-item {
   margin-bottom: 0.25rem;
 }
@@ -815,7 +790,6 @@ body.on-landing-page #landing-page .landing-login-notice {
   box-shadow: 0 0 0 2px rgba(110, 142, 118, 0.25);
 }
 
-/* Login / Register — Gmail email hint */
 .gmail-email-hint {
   font-size: 11px;
 }
@@ -829,7 +803,6 @@ body.on-landing-page #landing-page .landing-login-notice {
   border-color: #dee2e6;
 }
 
-/* Owner pet notifications — navbar bell dropdown */
 .nav-notifications {
   align-items: center;
 }
@@ -916,7 +889,6 @@ body.on-landing-page #landing-page .landing-login-notice {
   font-size: 11px;
 }
 
-/* Navbar account dropdown */
 .nav-account {
   align-items: center;
 }
@@ -957,7 +929,6 @@ body.on-landing-page #landing-page .landing-login-notice {
   cursor: pointer;
 }
 
-/* Google Maps — Tanauan City community locator */
 .google-map-container {
   min-height: 500px;
   height: 100%;
@@ -1149,7 +1120,6 @@ body.on-landing-page #landing-page .landing-login-notice {
   cursor: pointer;
 }
 
-/* Guest dashboard — locked pet cards */
 .guest-mode-banner {
   background-color: rgba(110, 142, 118, 0.08);
   border-left: 5px solid var(--primary-sage);
@@ -1176,19 +1146,16 @@ body.on-landing-page #landing-page .landing-login-notice {
   opacity: 0.85;
 }
 
-/* Homepage — hide welcome bar and green hero (search/feed only) */
 #main-page > header.hero-banner,
 #main-page #user-welcome-banner {
   display: none !important;
 }
 
-/* Homepage — section headings on olive background */
 #main-page section.my-4 > h4,
 #main-page section.my-5 h4.section-title {
   color: #ffffff !important;
 }
 
-/* Guest dashboard — section headings on olive background */
 body.guest-dashboard-page section.my-4 h4,
 body.guest-dashboard-page section.my-5 h4.section-title {
   color: #ffffff !important;

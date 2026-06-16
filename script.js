@@ -466,12 +466,19 @@ function logoutUser() {
     }
 
     localStorage.removeItem('currentUser');
+    sessionStorage.removeItem('petfinderLoggedIn');
 
     if (typeof refreshMapPinManagementUI === 'function') {
         refreshMapPinManagementUI();
     }
 
-    showSection('landing-page');
+    if (document.getElementById('landing-page') && typeof showSection === 'function') {
+        showSection('landing-page');
+    } else if (typeof isStandaloneAppPage === 'function' && isStandaloneAppPage()) {
+        window.location.href = 'index.html';
+    } else if (typeof showSection === 'function') {
+        showSection('landing-page');
+    }
 }
 
 function getCurrentUser() {
@@ -695,6 +702,27 @@ function showAdminLoginError(message) {
 
 function hideAdminLoginError() {
     const err = document.getElementById('adminLoginError');
+    if (err) err.style.display = 'none';
+}
+
+function showLoginError(message) {
+    let err = document.getElementById('loginError');
+    if (!err) {
+        err = document.createElement('div');
+        err.id = 'loginError';
+        err.className = 'alert alert-danger small py-2 px-3 mb-3 rounded-3 border-0';
+        err.setAttribute('role', 'alert');
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.parentElement.insertBefore(err, loginForm);
+        }
+    }
+    err.textContent = message;
+    err.style.display = 'block';
+}
+
+function hideLoginError() {
+    const err = document.getElementById('loginError');
     if (err) err.style.display = 'none';
 }
 
@@ -2209,7 +2237,18 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    if (isStandaloneAppPage()) {
+        initPetFinderBackend(function () {
+            initOwnerPetNotifications();
+        });
+        setTimeout(function () {
+            initStandalonePageNav();
+        }, 50);
+        return;
+    }
+
     initLostPetReportsCRUD();
+    initRegisterThenLoginFlow();
 
     initPetFinderBackend(function () {
         initPasswordToggleButtons();
@@ -2218,7 +2257,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         initAdminAuthPage();
         hideGuestDashboardPreviewOnLanding();
-        initRegisterThenLoginFlow();
         initOwnerPetNotifications();
         bindLostPetReportFormHandler();
         bindDistinctDetailsWarning();
@@ -2269,6 +2307,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function isUserSessionLoggedIn() {
     return sessionStorage.getItem('petfinderLoggedIn') === 'true' && !!getCurrentUser();
+}
+
+function isStandaloneAppPage() {
+    return !document.getElementById('main-page')
+        && !document.getElementById('landing-page')
+        && !!document.getElementById('nav-auth-btn');
+}
+
+function initStandalonePageNav() {
+    createNavActionButtons();
+    ensureOwnerNotificationsPanel();
+    bindNavAccountDropdown();
+    bindNavNotificationBell();
+    hideDuplicateCombinedNavAuthButton('main-page');
+    enforceNavbarLogoutVisibility('main-page');
+
+    if (isUserSessionLoggedIn()) {
+        const user = getCurrentUser();
+        if (user) {
+            displayMyAccountProfile();
+        }
+        renderOwnerNotificationsPanel();
+    }
 }
 
 function getActiveSectionId() {
@@ -3235,15 +3296,27 @@ function handleSecureRegister(event) {
 
 function handleSecureLogin(event) {
     if (event) event.preventDefault();
+    hideLoginError();
 
     const loginFullName = (document.getElementById('loginFullName')?.value.trim() || '');
     const loginEmail = (document.getElementById('loginEmail')?.value.trim() || '').toLowerCase();
     const loginPassword = document.getElementById('loginPassword')?.value || '';
 
     if (!loginFullName) {
+        showLoginError('Please enter your full name.');
         return;
     }
     if (!isValidGmailAddress(loginEmail)) {
+        showLoginError('Please use a valid Gmail address (e.g. name@gmail.com).');
+        return;
+    }
+    if (!loginPassword) {
+        showLoginError('Please enter your password.');
+        return;
+    }
+
+    if (isWrongPreviewHost()) {
+        showLoginError('Open PetFinder through http://localhost/petfinder/ (not Live Server or file://).');
         return;
     }
 
@@ -3252,6 +3325,7 @@ function handleSecureLogin(event) {
             const loginForm = document.getElementById('loginForm');
             if (loginForm) loginForm.reset();
             hideRegisterSuccessNotice();
+            hideLoginError();
             completeUserSession(
                 res.user.name,
                 res.user.email,
@@ -3263,7 +3337,11 @@ function handleSecureLogin(event) {
             completeUserLogin(res.user.name, res.user.email, res.user.location, res.user.contact);
             showSection('main-page');
             renderOwnerNotificationsPanel();
-        }).catch(function () {});
+        }).catch(function (err) {
+            showLoginError(err && err.message ? err.message : 'Login failed. Please check your credentials.');
+        });
+    }, function () {
+        handleSecureLoginLocal(loginFullName, loginEmail, loginPassword);
     });
 }
 
@@ -3274,6 +3352,7 @@ function handleSecureLoginLocal(loginFullName, loginEmail, loginPassword) {
         if (loginForm) loginForm.reset();
 
         hideRegisterSuccessNotice();
+        hideLoginError();
         completeUserSession(directoryLogin.name, directoryLogin.email, directoryLogin.location, directoryLogin.contact);
 
         if (redirectToMainAppAfterAuth()) return;
@@ -3294,22 +3373,27 @@ function handleSecureLoginLocal(loginFullName, loginEmail, loginPassword) {
     const registeredName = (registered.name || '').trim();
 
     if (!loginFullName) {
+        showLoginError('Please enter your full name.');
         return;
     }
 
     if (!isValidGmailAddress(loginEmail)) {
+        showLoginError('Please use a valid Gmail address (e.g. name@gmail.com).');
         return;
     }
 
     if (loginFullName.toLowerCase() !== registeredName.toLowerCase()) {
+        showLoginError('Full name does not match your registered account.');
         return;
     }
 
     if (loginEmail !== registeredEmail) {
+        showLoginError('Email does not match your registered account.');
         return;
     }
 
     if (loginPassword !== registered.password) {
+        showLoginError('Incorrect password. Please try again.');
         return;
     }
 
@@ -3317,6 +3401,7 @@ function handleSecureLoginLocal(loginFullName, loginEmail, loginPassword) {
     if (loginForm) loginForm.reset();
 
     hideRegisterSuccessNotice();
+    hideLoginError();
     completeUserSession(registered.name, registered.email, registered.location, registered.contact);
 
     if (redirectToMainAppAfterAuth()) return;

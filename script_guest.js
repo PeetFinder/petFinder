@@ -1,4 +1,3 @@
-// Guest dashboard — preview; data from MySQL when available
 const GUEST_DEFAULT_LOST_PETS = [
   { id: 'report_buddy', name: 'Buddy', species: 'Dog', breed: 'Golden Retriever', location: 'Barangay San Miguel', dateLost: 'Oct 20, 2023' },
   { id: 'report_luna', name: 'Luna', species: 'Cat', breed: 'Siamese Mix', location: 'Poblacion Area', dateLost: 'May 12, 2026' },

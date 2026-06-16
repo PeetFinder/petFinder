@@ -163,7 +163,6 @@
     }
 
     function isAdminSession() {
-      // reuse helper from script.js
       if (typeof isCurrentUserAdmin === 'function') return isCurrentUserAdmin();
       return false;
     }
