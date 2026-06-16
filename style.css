@@ -1,0 +1,1195 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+/* --- CUSTOM COLOR PALETTE & MODERN UI DESIGN --- */
+:root {
+  --primary-sage: #6E8E76;
+  --secondary-mint: #B5C99A;
+  --bg-cream: #F9F8F3;
+  --bg-olive-dark: #2F3E33;
+  --bg-olive-mid: #3D5244;
+  --accent-coral: #E8A598;
+  --dark-slate: #2F3E33;
+  --font-main: 'Plus Jakarta Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --shadow-soft: 0 12px 32px rgba(47, 62, 51, 0.12);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --radius-lg: 16px;
+  --radius-md: 12px;
+}
+
+body {
+  background: linear-gradient(135deg, var(--bg-olive-dark) 0%, var(--bg-olive-mid) 45%, var(--primary-sage) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: var(--dark-slate);
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6,
+.navbar-brand,
+.section-title {
+  font-family: var(--font-main);
+  letter-spacing: -0.02em;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.1rem;
+  height: 2.1rem;
+  padding: 0 0.35rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary-sage), #8fa895);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.brand-logo {
+  width: 2.1rem;
+  height: 2.1rem;
+  object-fit: contain;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.ui-feature-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(110, 142, 118, 0.14), rgba(181, 201, 154, 0.24));
+  color: var(--primary-sage);
+  font-weight: 800;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.pet-species-fallback,
+#modalPetEmoji.pet-species-fallback {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 100px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--primary-sage);
+  background: linear-gradient(180deg, #f5f7f5 0%, #e8ede9 100%);
+  border-radius: 8px;
+}
+
+.section-title {
+  letter-spacing: -0.02em;
+}
+
+.meta-label {
+  color: #6b7a70;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Navbar Styling — full-width edge-to-edge */
+.custom-navbar {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(47, 62, 51, 0.12);
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  border-radius: 0;
+  left: 0;
+  right: 0;
+}
+
+/* Footer — full-width edge-to-edge, pinned to bottom on short pages */
+.site-footer {
+  width: 100%;
+  max-width: 100%;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 -4px 16px rgba(47, 62, 51, 0.1);
+  border-radius: 0;
+  margin: 0;
+  margin-top: auto;
+  flex-shrink: 0;
+  padding-top: 0.6rem !important;
+  padding-bottom: 0.6rem !important;
+}
+
+.site-footer .gap-4 {
+  gap: 0.35rem !important;
+}
+
+.site-footer .mb-2 {
+  margin-bottom: 0.15rem !important;
+}
+
+.site-footer p.mt-2 {
+  margin-top: 0.15rem !important;
+}
+
+.navbar-brand,
+.nav-link {
+  color: var(--dark-slate) !important;
+}
+
+.nav-link.active,
+.nav-link:hover {
+  color: var(--primary-sage) !important;
+  font-weight: 600;
+}
+
+/* Containers and Custom Cards */
+.custom-card {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(110, 142, 118, 0.12);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#user-welcome-banner {
+  background-color: rgba(110, 142, 118, 0.06);
+  border-left: 5px solid var(--primary-sage);
+}
+
+#my-account-page > .account-back-btn {
+  display: none !important;
+}
+
+.account-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 0.5rem;
+  border: 2px solid var(--primary-sage);
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--primary-sage);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.account-back-btn:hover {
+  background: var(--primary-sage);
+  color: #ffffff;
+  transform: translateX(-2px);
+}
+
+.nav-user {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--primary-sage);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.nav-user-initials {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.nav-action-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.auth-hidden {
+  display: none !important;
+}
+
+.password-input-wrap {
+  position: relative;
+}
+
+.password-input-wrap .form-control {
+  padding-right: 2.75rem;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  top: 50%;
+  right: 0.65rem;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #6b7a70;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.password-toggle-btn:hover {
+  color: var(--primary-sage);
+  background: rgba(110, 142, 118, 0.08);
+}
+
+.password-toggle-btn .password-eye-show {
+  display: none;
+}
+
+.password-toggle-btn.is-visible .password-eye-show {
+  display: block;
+}
+
+.password-toggle-btn.is-visible .password-eye-hide {
+  display: none;
+}
+
+/* Compact small banner shown above the hero when user is active */
+.small-user-banner {
+  margin: 0 0 1rem 0;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background-color: rgba(110, 142, 118, 0.035);
+  border-left: 3px solid var(--primary-sage);
+}
+
+.small-user-banner h3 {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.1rem;
+  line-height: 1;
+  color: var(--dark-slate);
+}
+
+.small-user-banner p {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: rgba(47,62,51,0.8);
+}
+
+.custom-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(110, 142, 118, 0.12);
+}
+
+/* Hero Section Gradient Dynamic */
+.hero-banner {
+  background: linear-gradient(135deg, var(--bg-olive-mid) 0%, var(--primary-sage) 55%, #8fa895 100%);
+  color: #ffffff !important;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.hero-banner-with-back {
+  padding-top: 3.25rem !important;
+}
+
+.hero-banner .hero-back-btn {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  margin: 0;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.hero-banner .hero-back-btn:hover {
+  background: #ffffff;
+  color: var(--primary-sage);
+  transform: translateX(-2px);
+}
+
+/* Custom Styled Buttons */
+.btn-sage {
+  background-color: var(--primary-sage);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: background 0.2s, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-sage:hover {
+  background-color: #56725D;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(110, 142, 118, 0.22);
+}
+
+.btn-outline-sage {
+  border: 2px solid var(--primary-sage);
+  color: var(--primary-sage);
+  background: transparent;
+}
+
+.btn-outline-sage:hover {
+  background-color: var(--primary-sage);
+  color: #ffffff;
+}
+
+.btn-coral {
+  background-color: var(--accent-coral);
+  color: #ffffff;
+  border: none;
+}
+
+.btn-coral:hover {
+  background-color: #D38E82;
+  color: #ffffff;
+}
+
+/* Input Form Enhancements */
+.form-control,
+.form-select {
+  border: 1.5px solid #D0D7D1;
+  border-radius: 8px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-sage);
+  box-shadow: 0 0 0 0.25rem rgba(110, 142, 118, 0.25);
+}
+
+/* Accordion Custom Styling for FAQs */
+.accordion-item {
+  border: none;
+  margin-bottom: 10px;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: rgba(110, 142, 118, 0.1);
+  color: var(--primary-sage);
+  font-weight: 600;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+  border-color: rgba(110, 142, 118, 0.25);
+}
+
+/* Media Box Placeholders */
+.pet-img-box {
+  width: 100%;
+  height: 160px;
+  background-color: #F1F3F0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #A0AFA3;
+  overflow: hidden;
+}
+
+.pet-img-box .pet-report-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pet-report-photo-modal {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.map-canvas-box {
+  width: 100%;
+  height: 380px;
+  background-color: #E2E8E4;
+  border-radius: 12px;
+  border: 2px dashed var(--primary-sage);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Section Switching Core Mechanics */
+.page-section {
+  display: none;
+}
+
+.page-section.active-section {
+  display: block !important;
+}
+
+body.on-info-page #navbarNav,
+body.on-info-page .custom-navbar .navbar-toggler {
+  display: none !important;
+}
+
+body.on-info-page .custom-navbar .navbar-brand {
+  margin-right: 0;
+}
+
+.vertical-divider {
+  border-right: 1.5px solid #E5EAE6;
+}
+
+@media (max-width: 767.98px) {
+  .vertical-divider {
+    border-right: none;
+    border-bottom: 1.5px solid #E5EAE6;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* Interactive Element Styles */
+.map-grid-button {
+  background: #ffffff;
+  border: 1.5px solid #E5EAE6;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: left;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.map-grid-button:hover,
+.map-grid-button.active-pin {
+  border-color: var(--primary-sage);
+  background-color: rgba(110, 142, 118, 0.05);
+}
+
+/* Vector Map Graphics Design Styles */
+.vector-map-bg {
+  background-color: #EBF0EC;
+  background-image:
+    radial-gradient(var(--secondary-mint) 1px, transparent 0),
+    linear-gradient(to right, rgba(110, 142, 118, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(110, 142, 118, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px, 40px 40px, 40px 40px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.map-road {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(110, 142, 118, 0.2);
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.02);
+}
+
+.map-radar-pin {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-color: var(--accent-coral);
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 10;
+}
+
+.map-radar-pin::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  right: -12px;
+  bottom: -12px;
+  border: 2px solid var(--accent-coral);
+  border-radius: 50%;
+  animation: pulseRadar 1.5s infinite ease-out;
+}
+
+@keyframes pulseRadar {
+  0% { transform: scale(0.4); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.map-area-tag {
+  position: absolute;
+  font-size: 11px;
+  font-weight: 700;
+  color: #56725D;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(110, 142, 118, 0.2);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+@keyframes targetPulse {
+  0% { background-color: rgba(232, 165, 152, 0.15); }
+  100% { background-color: rgba(232, 165, 152, 0.3); }
+}
+
+.landing-feature-icon {
+  font-size: 2.5rem;
+  background: rgba(110, 142, 118, 0.1);
+  color: var(--primary-sage);
+  width: 70px;
+  height: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
+/* Personal Account Page Styles */
+.max-width-600 {
+  max-width: 600px !important;
+}
+
+.user-avatar-large {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--primary-sage);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(110, 142, 118, 0.2);
+}
+
+.profile-section {
+  border-left: 3px solid var(--primary-sage);
+}
+
+.profile-section label {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(47, 62, 51, 0.7);
+}
+
+.profile-section p {
+  color: var(--dark-slate);
+}
+
+.my-account-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.my-account-box {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Account Management Page Styles */
+.account-users-table {
+  border: 1px solid #E5EAE6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.account-users-table table {
+  margin-bottom: 0;
+}
+
+.account-users-table tbody tr {
+  border-bottom: 1px solid #F1F3F0;
+}
+
+.account-users-table tbody tr:hover {
+  background-color: rgba(110, 142, 118, 0.03);
+}
+
+.account-users-table .btn-sm {
+  font-size: 11px;
+  padding: 0.35rem 0.6rem;
+}
+
+.edit-user-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.edit-user-box {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  
+}
+
+/* Lost Pet Report Details Modal (View Details CRUD) */
+#petDetailsModal .my-account-box {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+#petDetailsModal .profile-section {
+  border-left: 3px solid var(--secondary-mint);
+}
+
+#petEditMode .form-control,
+#petEditMode .form-select {
+  font-size: 0.9rem;
+}
+
+#petDetailsModal #modalPetEmoji.user-avatar-large {
+  width: 90px;
+  height: 90px;
+  font-size: 2.5rem;
+}
+
+/* Hide Guest Dashboard Preview block on landing page */
+#landing-page > section.my-4 {
+  display: none !important;
+}
+
+/* Hide navbar Login / Register on landing & auth pages (forms already on page) */
+.landing-nav-hidden,
+body.on-auth-page #nav-login-btn,
+body.on-auth-page #nav-register-btn,
+body.on-auth-page #nav-auth-btn.nav-combined-auth-hidden,
+body.on-landing-page #nav-login-btn,
+body.on-landing-page #nav-register-btn {
+  display: none !important;
+}
+
+/* Hide duplicate combined Login / Register when separate nav buttons exist */
+#nav-auth-btn.nav-combined-auth-hidden {
+  display: none !important;
+}
+
+/* Hide Logout until user has logged in (and not on landing/auth) */
+#nav-auth-btn.nav-logout-hidden,
+#nav-account.nav-user-logout-hidden {
+  display: none !important;
+}
+
+/* Navbar user account icon (restored via script.js) */
+#nav-account.nav-user-visible {
+  display: inline-flex !important;
+}
+
+.nav-action-group #nav-account {
+  flex-shrink: 0;
+}
+
+/* Logout button beside user account icon */
+#nav-auth-btn.nav-logout-visible {
+  display: inline-block !important;
+}
+
+.nav-action-group #nav-login-btn.nav-login-register-hidden,
+.nav-action-group #nav-register-btn.nav-login-register-hidden {
+  display: none !important;
+}
+
+.nav-action-group #nav-auth-btn.nav-logout-visible {
+  order: 1;
+}
+
+.nav-action-group #nav-account.nav-user-visible {
+  order: 2;
+}
+
+/* Hide Account Management (Add User / User Directory) on homepage */
+#homepage-user-account-mount,
+.homepage-user-account-section,
+#main-page #homepage-user-account-mount main,
+#main-page .homepage-user-account-section {
+  display: none !important;
+}
+
+#user-welcome-banner.homepage-account-hidden {
+  display: none !important;
+}
+
+/* Landing page — prompt login after registration */
+.landing-login-notice {
+  border-left: 5px solid var(--primary-sage);
+  background: #ffffff !important;
+}
+
+.landing-login-notice .landing-notice-login-btn {
+  white-space: nowrap;
+}
+
+body.on-landing-page #landing-page .landing-login-notice {
+  display: block;
+}
+
+/* Map pin incidents CRUD */
+.map-pin-list-item {
+  margin-bottom: 0.25rem;
+}
+
+.map-pin-crud-actions .btn-sm {
+  font-size: 11px;
+  padding: 0.25rem 0.5rem;
+}
+
+.map-pin-detail-crud {
+  border-color: #E5EAE6 !important;
+}
+
+.map-pin-crud-modal .map-pin-crud-box {
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+#mapPinAddBtn {
+  font-size: 13px;
+}
+
+.map-grid-button.active-pin {
+  box-shadow: 0 0 0 2px rgba(110, 142, 118, 0.25);
+}
+
+/* Login / Register — Gmail email hint */
+.gmail-email-hint {
+  font-size: 11px;
+}
+
+.gmail-email-input:focus {
+  border-color: var(--primary-sage);
+  box-shadow: 0 0 0 0.15rem rgba(110, 142, 118, 0.15);
+}
+
+#loginFullName {
+  border-color: #dee2e6;
+}
+
+/* Owner pet notifications — navbar bell dropdown */
+.nav-notifications {
+  align-items: center;
+}
+
+.nav-notif-bell-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid rgba(110, 142, 118, 0.35);
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--primary-sage);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.nav-notif-bell-btn:hover {
+  background: rgba(110, 142, 118, 0.08);
+  border-color: var(--primary-sage);
+}
+
+.nav-notif-bell-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #dc3545;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-notif-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(360px, calc(100vw - 24px));
+  background: #ffffff;
+  border: 1px solid rgba(110, 142, 118, 0.18);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(47, 62, 51, 0.14);
+  z-index: 1050;
+  overflow: hidden;
+}
+
+.nav-notif-dropdown-header {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #e5eae6;
+  background: rgba(110, 142, 118, 0.04);
+}
+
+.owner-notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 0.85rem;
+}
+
+.owner-notif-item {
+  background: #ffffff;
+  border: 1px solid #e5eae6;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+}
+
+.owner-notif-item-unread {
+  border-color: var(--primary-sage);
+  background: rgba(110, 142, 118, 0.08);
+  box-shadow: 0 2px 8px rgba(110, 142, 118, 0.1);
+}
+
+.owner-notif-unread-badge {
+  font-size: 11px;
+}
+
+/* Navbar account dropdown */
+.nav-account {
+  align-items: center;
+}
+
+.nav-account-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(440px, calc(100vw - 24px));
+  background: #ffffff;
+  border: 1px solid rgba(110, 142, 118, 0.18);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(47, 62, 51, 0.14);
+  z-index: 1051;
+  overflow: hidden;
+}
+
+.nav-account-dropdown-header {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #e5eae6;
+  background: rgba(110, 142, 118, 0.04);
+}
+
+.nav-account-dropdown-body {
+  padding: 1rem;
+  max-height: min(70vh, 520px);
+  overflow-y: auto;
+}
+
+.nav-account-avatar {
+  width: 72px;
+  height: 72px;
+  font-size: 1.35rem;
+}
+
+#navUserBtn.nav-user {
+  border: none;
+  cursor: pointer;
+}
+
+/* Google Maps — Tanauan City community locator */
+.google-map-container {
+  min-height: 500px;
+  height: 100%;
+  background: #e8efe9;
+  overflow: hidden;
+}
+
+.google-map-leaflet-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+}
+
+.google-map-leaflet-canvas,
+.google-map-leaflet-mode .leaflet-container {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  border-radius: 12px;
+}
+
+.leaflet-incident-pin-icon {
+  background: transparent;
+  border: none;
+}
+
+.leaflet-incident-pin-icon .google-incident-pin {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+}
+
+.google-map-embed-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.google-map-embed-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  z-index: 1;
+}
+
+.google-map-marker-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.google-map-city-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(110, 142, 118, 0.35);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #2f3e33;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+}
+
+.google-map-city-badge strong {
+  display: block;
+  color: var(--primary-sage);
+  font-size: 12px;
+}
+
+.google-barangay-pin,
+.google-incident-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.google-barangay-pin::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  margin: 0 auto 2px;
+  border-radius: 50%;
+  background: #6E8E76;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.google-barangay-pin-label {
+  display: block;
+  max-width: 72px;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #2f3e33;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 4px;
+  padding: 1px 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.google-barangay-pin:hover::before,
+.google-barangay-pin.active::before {
+  background: #1a73e8;
+  transform: scale(1.15);
+}
+
+.google-incident-pin {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #E8836B;
+  border: 2px solid #ffffff;
+  box-shadow: 0 3px 10px rgba(232, 131, 107, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.google-incident-pin-emoji {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.google-incident-pin:hover,
+.google-incident-pin.active {
+  transform: translate(-50%, -50%) scale(1.08);
+  box-shadow: 0 4px 14px rgba(232, 131, 107, 0.55);
+}
+
+.leaflet-incident-pin-icon .google-incident-pin:hover,
+.leaflet-incident-pin-icon .google-incident-pin.active {
+  transform: scale(1.08);
+}
+
+.google-map-popup {
+  font-size: 13px;
+  color: #2f3e33;
+  max-width: 220px;
+}
+
+.google-map-popup-title {
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.google-map-popup-sub {
+  color: #5f6f65;
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+.google-map-popup-log {
+  color: #5f6f65;
+  margin-top: 6px;
+  line-height: 1.45;
+}
+
+.google-map-popup-btn {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #6E8E76;
+  background: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Guest dashboard — locked pet cards */
+.guest-mode-banner {
+  background-color: rgba(110, 142, 118, 0.08);
+  border-left: 5px solid var(--primary-sage);
+}
+
+.guest-locked-card {
+  cursor: pointer;
+  position: relative;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.guest-locked-card:hover {
+  box-shadow: 0 8px 20px rgba(110, 142, 118, 0.15);
+  transform: translateY(-2px);
+}
+
+.guest-locked-card .guest-lock-badge {
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.guest-locked-card .btn {
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* Homepage — hide welcome bar and green hero (search/feed only) */
+#main-page > header.hero-banner,
+#main-page #user-welcome-banner {
+  display: none !important;
+}
+
+/* Homepage — section headings on olive background */
+#main-page section.my-4 > h4,
+#main-page section.my-5 h4.section-title {
+  color: #ffffff !important;
+}
+
+/* Guest dashboard — section headings on olive background */
+body.guest-dashboard-page section.my-4 h4,
+body.guest-dashboard-page section.my-5 h4.section-title {
+  color: #ffffff !important;
+}

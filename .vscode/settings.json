@@ -1,0 +1,6 @@
+{
+  "liveServer.settings.port": 0,
+  "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.ignoreFiles": ["**/*"],
+  "debug.allowBreakpointsEverywhere": false
+}

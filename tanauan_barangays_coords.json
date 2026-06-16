@@ -1,0 +1,242 @@
+{
+  "AlturaBata": {
+    "name": "Altura Bata",
+    "lat": 14.125686,
+    "lng": 121.0769567
+  },
+  "AlturaMatanda": {
+    "name": "Altura Matanda",
+    "lat": 14.1332282,
+    "lng": 121.0848914
+  },
+  "AlturaSouth": {
+    "name": "Altura South",
+    "lat": 14.128208,
+    "lng": 121.0888182
+  },
+  "Ambulong": {
+    "name": "Ambulong",
+    "lat": 14.091703,
+    "lng": 121.0561571
+  },
+  "Bagbag": {
+    "name": "Bagbag",
+    "lat": 14.042609,
+    "lng": 121.0990775
+  },
+  "Bagumbayan": {
+    "name": "Bagumbayan",
+    "lat": 14.0745712,
+    "lng": 121.1385299
+  },
+  "Balele": {
+    "name": "Balele",
+    "lat": 14.0626408,
+    "lng": 121.0918756
+  },
+  "Banadero": {
+    "name": "Banadero",
+    "lat": 14.0836179,
+    "lng": 121.0709995
+  },
+  "BanjoEast": {
+    "name": "Banjo East",
+    "lat": 14.0569627,
+    "lng": 121.1435632
+  },
+  "BanjoLaurel": {
+    "name": "Banjo Laurel",
+    "lat": 14.054154,
+    "lng": 121.1346691
+  },
+  "BilogBilog": {
+    "name": "Bilog-Bilog",
+    "lat": 14.1138276,
+    "lng": 121.0878809
+  },
+  "Boot": {
+    "name": "Boot",
+    "lat": 14.050828,
+    "lng": 121.0824912
+  },
+  "Cale": {
+    "name": "Cale",
+    "lat": 14.1194202,
+    "lng": 121.0959314
+  },
+  "Darasa": {
+    "name": "Darasa",
+    "lat": 14.0673724,
+    "lng": 121.1530032
+  },
+  "Gonzales": {
+    "name": "Gonzales",
+    "lat": 14.0713387,
+    "lng": 121.0776031
+  },
+  "Hidalgo": {
+    "name": "Hidalgo",
+    "lat": 14.0704607,
+    "lng": 121.1411275
+  },
+  "JanopolOccidental": {
+    "name": "Janopol Occidental",
+    "lat": 14.0816137,
+    "lng": 121.0866809
+  },
+  "JanopolOriental": {
+    "name": "Janopol Oriental",
+    "lat": 14.0878101,
+    "lng": 121.0984497
+  },
+  "Laurel": {
+    "name": "Laurel",
+    "lat": 14.1432627,
+    "lng": 121.1076332
+  },
+  "Luyos": {
+    "name": "Luyos",
+    "lat": 14.1232335,
+    "lng": 121.0726083
+  },
+  "Mabini": {
+    "name": "Mabini",
+    "lat": 14.0589309,
+    "lng": 121.1126831
+  },
+  "MalakingPulo": {
+    "name": "Malaking Pulo",
+    "lat": 14.1371973,
+    "lng": 121.0889282
+  },
+  "MariaPaz": {
+    "name": "Maria Paz",
+    "lat": 14.0415117,
+    "lng": 121.070068
+  },
+  "Maugat": {
+    "name": "Maugat",
+    "lat": 14.1007677,
+    "lng": 121.0674698
+  },
+  "Montaa": {
+    "name": "Montaña",
+    "lat": 14.1280299,
+    "lng": 121.0625621
+  },
+  "Natatas": {
+    "name": "Natatas",
+    "lat": 14.0808558,
+    "lng": 121.1200632
+  },
+  "Pagaspas": {
+    "name": "Pagaspas",
+    "lat": 14.0968983,
+    "lng": 121.138465
+  },
+  "PantayBata": {
+    "name": "Pantay Bata",
+    "lat": 14.1284344,
+    "lng": 121.1125651
+  },
+  "PantayMatanda": {
+    "name": "Pantay Matanda",
+    "lat": 14.1187374,
+    "lng": 121.1198426
+  },
+  "Poblacion1": {
+    "name": "Poblacion Barangay 1",
+    "lat": 14.0874752,
+    "lng": 121.1501625
+  },
+  "Poblacion2": {
+    "name": "Poblacion Barangay 2",
+    "lat": 14.0841718,
+    "lng": 121.1517829
+  },
+  "Poblacion3": {
+    "name": "Poblacion Barangay 3",
+    "lat": 14.0800857,
+    "lng": 121.1520016
+  },
+  "Poblacion4": {
+    "name": "Poblacion Barangay 4",
+    "lat": 14.0885102,
+    "lng": 121.1482703
+  },
+  "Poblacion5": {
+    "name": "Poblacion Barangay 5",
+    "lat": 14.0821407,
+    "lng": 121.1489984
+  },
+  "Poblacion6": {
+    "name": "Poblacion Barangay 6",
+    "lat": 14.0854702,
+    "lng": 121.1461562
+  },
+  "Poblacion7": {
+    "name": "Poblacion Barangay 7",
+    "lat": 14.0811341,
+    "lng": 121.1450994
+  },
+  "Sala": {
+    "name": "Sala",
+    "lat": 14.1032107,
+    "lng": 121.112033
+  },
+  "Sambat": {
+    "name": "Sambat",
+    "lat": 14.0827637,
+    "lng": 121.1364634
+  },
+  "SanJose": {
+    "name": "San Jose",
+    "lat": 14.1110937,
+    "lng": 121.0648587
+  },
+  "Santol": {
+    "name": "Santol",
+    "lat": 14.1500796,
+    "lng": 121.0843362
+  },
+  "Santor": {
+    "name": "Santor",
+    "lat": 14.0935038,
+    "lng": 121.113431
+  },
+  "Sulpoc": {
+    "name": "Sulpoc",
+    "lat": 14.1382189,
+    "lng": 121.0679164
+  },
+  "Suplang": {
+    "name": "Suplang",
+    "lat": 14.149047,
+    "lng": 121.0632688
+  },
+  "Talaga": {
+    "name": "Talaga",
+    "lat": 14.1009362,
+    "lng": 121.0985439
+  },
+  "Tinurik": {
+    "name": "Tinurik",
+    "lat": 14.0639331,
+    "lng": 121.1219662
+  },
+  "Trapiche": {
+    "name": "Trapiche",
+    "lat": 14.0972475,
+    "lng": 121.1270869
+  },
+  "Ulango": {
+    "name": "Ulango",
+    "lat": 14.134688,
+    "lng": 121.109561
+  },
+  "Wawa": {
+    "name": "Wawa",
+    "lat": 14.0640812,
+    "lng": 121.0762634
+  }
+}

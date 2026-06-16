@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PetFinder - Lost Pet Reporting & Community Locator</title>
+   <link rel="icon" type="image/png" href="LOGO.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style_landing.css">
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg custom-navbar py-3 sticky-top">
+    <div class="container-fluid px-4 px-lg-5">
+      <a class="navbar-brand fw-bold fs-3 d-inline-flex align-items-center gap-2" href="landing.html"><img src="LOGO.png" alt="" class="brand-logo" width="34" height="34"><span>PetFinder</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#about-page" onclick="return goToInfoPage('about-page', event)">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#faqs-page" onclick="return goToInfoPage('faqs-page', event)">FAQs</a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+          <a href="auth.html" class="btn btn-outline-sage fw-bold px-4">Login / Register</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+    <div id="landing-page">
+
+      <header class="custom-card landing-hero-card p-5 my-4 text-center text-md-start position-relative overflow-hidden">
+        <video class="landing-hero-video-bg" autoplay loop muted playsinline preload="auto">
+          <source src="pics/videoplayback.mp4" type="video/mp4">
+        </video>
+        <div class="landing-hero-video-overlay"></div>
+        <div class="row align-items-center py-4 position-relative landing-hero-content">
+          <div class="col-12">
+            <span class="badge btn-sage px-3 py-2 rounded-pill mb-3 fw-bold tracking-wide"
+              style="font-size: 11px; letter-spacing: 1px;">WELCOME TO PETFINDER HUB</span>
+            <h1 class="display-3 fw-bold mb-3" style="color: var(--dark-slate); line-height: 1.1;">Every Lost Pet,
+              <br><span style="color: var(--primary-sage);">Has Hope to be Found.</span>
+            </h1>
+            <p class="lead text-muted mb-4" style="font-size: 18px; max-width: 600px;">A trusted platform for the
+              community to quickly report lost pets and identify their location using our real-time tracker map.</p>
+
+            <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
+              <a href="auth.html" class="btn btn-sage fw-bold px-4 py-3 shadow">LOG IN (User)</a>
+              <a href="admin-reports.html" class="btn btn-sage fw-bold px-4 py-3 shadow landing-admin-portal-btn">LOG IN (Admin)</a>
+              <a href="guest-dashboard.html" class="btn btn-sage fw-bold px-4 py-3 shadow">VIEW GUEST DASHBOARD</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="my-5">
+        <div class="row g-4 text-center">
+          <div class="col-md-4">
+            <div class="card custom-card h-100 p-4">
+              <div class="ui-feature-icon mx-auto">RPT</div>
+              <h4 class="fw-bold mb-2">Fast Reporting</h4>
+              <p class="text-muted small mb-0">Immediately create public alert incident logs including photos, time, and
+                the last landmark where the pet was located.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card custom-card h-100 p-4">
+              <div class="ui-feature-icon mx-auto">MAP</div>
+              <h4 class="fw-bold">Community Locator Map</h4>
+              <p class="text-muted small mb-0">Check the interactive radar grid map to see the locations and verified
+                sightings of lost pets in nearby neighborhoods.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card custom-card h-100 p-4">
+              <div class="ui-feature-icon mx-auto">NET</div>
+              <h4 class="fw-bold">Community Cooperation</h4>
+              <p class="text-muted small mb-0">Be the eyes of the community. Provide instant live sighting updates or
+                tips when you see a stray animal on the road.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="my-4">
+        <div class="custom-card p-4 p-md-5 text-center" style="background: rgba(110, 142, 118, 0.05);">
+          <h3 class="fw-bold mb-3" style="color: var(--primary-sage);">Guest Dashboard Preview</h3>
+          <p class="text-muted mb-4">Experience the PetFinder dashboard's Guest View via the landing page link.
+            Here, you can view the active lookup tool, map integration, and the designated user mode.</p>
+          <a href="guest-dashboard.html" class="btn btn-sage fw-bold px-4 py-3">
+            Open the Guest Dashboard</a>
+        </div>
+      </section>
+
+    </div>
+
+    <div id="about-page" class="landing-info-section" style="display: none;">
+      <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
+        <button type="button" class="hero-back-btn" onclick="goBackToInfoHome()" aria-label="Back" title="Back">←</button>
+        <h1 class="display-5 fw-bold mb-2">About PetFinder</h1>
+        <p class="h4 fw-light mb-0">Our Mission, Our Vision, and the Community Behind the System</p>
+      </header>
+
+      <main class="row g-4 my-2">
+        <div class="col-md-6">
+          <div class="card custom-card h-100 p-4">
+            <h3 class="fw-bold mb-3 section-title" style="color: var(--primary-sage);">Our Mission</h3>
+            <p class="lead" style="line-height: 1.8; font-size: 16px;">
+              The primary goal of <strong>PetFinder</strong> is to serve as a bridge for the fast and safe return of
+              lost pets to their loving families. Through innovative web technology and active community participation,
+              we streamline incident reporting and tracking using a real-time locator system.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card custom-card h-100 p-4">
+            <h3 class="fw-bold mb-3 section-title" style="color: var(--primary-sage);">Our Vision</h3>
+            <p class="lead" style="line-height: 1.8; font-size: 16px;">
+              We envision a compassionate and interconnected community where no pet is ever left missing or abandoned on
+              the streets. PetFinder aims to become the leading web utility platform in the country for animal welfare,
+              community safety, and responsive locator assistance.
+            </p>
+          </div>
+        </div>
+      </main>
+
+      <section class="custom-card p-4 p-md-5 my-4">
+        <h3 class="fw-bold text-center mb-5" style="color: var(--primary-sage);">How Does PetFinder Help?</h3>
+        <div class="row text-center g-4">
+          <div class="col-md-4">
+            <div class="p-3">
+              <div class="ui-feature-icon mx-auto">RPT</div>
+              <h5 class="fw-bold">Effortless Reporting</h5>
+              <p class="text-muted small">Pet owners can quickly publish comprehensive public logs detailing pet
+                descriptions, photos, and last known locations.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3">
+              <div class="ui-feature-icon mx-auto">MAP</div>
+              <h5 class="fw-bold">Community Locator Map</h5>
+              <p class="text-muted small">An interactive geocoding canvas pinpointing coordinates of reported missing
+                pets or active sightings within the vicinity.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3">
+              <div class="ui-feature-icon mx-auto">ALRT</div>
+              <h5 class="fw-bold">Sighting Feeds</h5>
+              <p class="text-muted small">Community members can instantly submit live feedback tags or sighting tips if
+                they encounter any missing animal.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="my-4 text-center">
+        <h4 class="fw-bold mb-4" style="color: var(--primary-sage);">The Development Team</h4>
+        <div class="row justify-content-center">
+          <div class="col-md-4 col-sm-6">
+            <div class="card custom-card p-4 text-center">
+              <div class="mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 100px; height: 100px; background-color: #E2E8E4; color: var(--primary-sage);">
+                <span class="ui-feature-icon d-inline-flex" style="width:48px;height:48px;">DEV</span>
+              </div>
+              <h5 class="fw-bold mb-1">System Developers</h5>
+              <p class="text-muted small mb-0">Information Technology Students</p>
+              <p class="small fw-semibold mt-2" style="color: var(--accent-coral);">DIT 2-1 PUP STC</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="faqs-page" class="landing-info-section" style="display: none;">
+      <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
+        <button type="button" class="hero-back-btn" onclick="goBackToInfoHome()" aria-label="Back" title="Back">←</button>
+        <h1 class="display-5 fw-bold mb-2">Frequently Asked Questions</h1>
+        <p class="h4 fw-light mb-0">Got Questions? We Have Answers.</p>
+      </header>
+
+      <main class="custom-card p-4 p-md-5 my-4">
+        <div class="accordion" id="petfinderFaqAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapseOne"
+                aria-expanded="true">
+                How do I report a missing pet?
+              </button>
+            </h2>
+            <div id="faq-collapseOne" class="accordion-collapse collapse show" data-bs-parent="#petfinderFaqAccordion">
+              <div class="accordion-body text-muted" style="line-height: 1.6;">
+                To report a missing pet, you need to create an account or log in first. Once logged in, click on the
+                <strong>"Report Lost Pet"</strong> button on the dashboard. Fill out the application form with your
+                pet's name, species, breed, distinct markings, a recent photograph, and the last known location where
+                they went missing.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#faq-collapseTwo" aria-expanded="false">
+                What should I do if I spot a pet listed on the map?
+              </button>
+            </h2>
+            <div id="faq-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#petfinderFaqAccordion">
+              <div class="accordion-body text-muted" style="line-height: 1.6;">
+                If you happen to see an animal that matches a missing report, go to that pet's specific profile panel
+                and click the <strong>"Sighting"</strong> button. You can submit a short tip or text log detailing the
+                exact time and precise landmark coordinates where you spotted the animal to alert the owner immediately.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#faq-collapseThree" aria-expanded="false">
+                Is PetFinder free to use for everyone?
+              </button>
+            </h2>
+            <div id="faq-collapseThree" class="accordion-collapse collapse" data-bs-parent="#petfinderFaqAccordion">
+              <div class="accordion-body text-muted" style="line-height: 1.6;">
+                Yes! <strong>PetFinder Hub</strong> is an open community-driven utility tool designed entirely for
+                public animal welfare assistance. Registering an account, logging entries, publishing lost pet alerts,
+                and navigating the locator tracking map canvas are completely free of charge.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#faq-collapseFour" aria-expanded="false">
+                How does the Community Locator Map work?
+              </button>
+            </h2>
+            <div id="faq-collapseFour" class="accordion-collapse collapse" data-bs-parent="#petfinderFaqAccordion">
+              <div class="accordion-body text-muted" style="line-height: 1.6;">
+                The locator map acts as a geocoding canvas module. When users submit reports or log verified sightings,
+                the platform marks those specific geographical points. This allows residents in neighboring barangays to
+                see map flags and stay vigilant about active cases around their vicinity.
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div id="terms-page" class="landing-info-section" style="display: none;">
+      <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
+        <button type="button" class="hero-back-btn" onclick="goBackToInfoHome()" aria-label="Back" title="Back">←</button>
+        <h1 class="display-5 fw-bold mb-2">Terms of Use</h1>
+        <p class="h4 fw-light mb-0">Rules and Guidelines for Our Community Platform</p>
+      </header>
+
+      <main class="custom-card p-4 p-md-5 my-4">
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">1. Acceptance of Terms</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            By accessing and using the PetFinder Hub platform, you agree to comply with and be bound by these Terms of
+            Use. If you do not agree with any part of these rules, you are prohibited from utilizing the web system
+            resources.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">2. User Accountability & Account Security</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            To publish reports or document sighting logs, users must complete the registration form. You are entirely
+            accountable for preserving the confidentiality of your credentials and for all activities triggered under
+            your verified profile dashboard.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">3. Content Authenticity Guidelines</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            Users guarantee that all information, photographs, timestamps, and landmark map coordinates uploaded onto
+            the system are authentic, accurate, and relate to actual missing animal occurrences. Uploading fake alerts,
+            misleading updates, or malicious content is strictly prohibited and constitutes grounds for immediate
+            account suspension.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">4. Code of Conduct</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            You agree to engage with other pet owners and community members respectfully. Harassment, abusive language
+            in sighting feeds, or the exploitation of contact data gathered from the platform for commercial spam or
+            external illegal activities will not be tolerated.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">5. System Modifications</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            As an evolving framework developed for community utility support, the development team reserves the right to
+            modify features, clear legacy database elements, or adjust interfaces within the scope of academic
+            advancement and platform enhancement.
+          </p>
+        </div>
+      </main>
+    </div>
+
+    <div id="privacy-page" class="landing-info-section" style="display: none;">
+      <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
+        <button type="button" class="hero-back-btn" onclick="goBackToInfoHome()" aria-label="Back" title="Back">←</button>
+        <h1 class="display-5 fw-bold mb-2">Privacy Policy</h1>
+        <p class="h4 fw-light mb-0">How We Protect and Handle Your Personal Information</p>
+      </header>
+
+      <main class="custom-card p-4 p-md-5 my-4">
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">1. Information We Collect</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            When you use PetFinder Hub, we collect standard credentials necessary for core feature tracking. This
+            includes your complete name, authenticated email address, custom login credentials, and public contact
+            information necessary to establish owner communication linkages.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">2. Use of System Content & Pet Data</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            All data related to missing animals—including pet names, descriptions, species identifiers, uploaded images,
+            and last known geographic parameters—is deliberately published out to the open dashboard feed to alert
+            community observers. Landmark logs submitted via the locator panel serve solely to assist active retrieval
+            procedures.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">3. Data Exposure & Map Geocoding</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            To fulfill locator assistance parameters, specific sighting inputs and relative landmark coordinates are
+            converted into visual map marks on our public geocoding canvas. We advise against supplying precise private
+            residential data unless strictly crucial for pet identification and return protocols.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">4. Security Measures & Retention</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            We employ strict structural design approaches to store profile information securely and safeguard it from
+            unapproved external intercepts. Data records remain cached on our server blocks within the duration of
+            active status operations, and users retain full rights to wipe or alter logs directly through their active
+            profile channels.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">5. Policy Changes</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            The system administration reserves the capacity to amend privacy conditions to match security engineering
+            standards or adjust configuration needs. Continued data processing and login activity within the layout
+            after revisions take place imply consent to structural policy adaptations.
+          </p>
+        </div>
+      </main>
+    </div>
+
+  </div>
+
+  <footer class="site-footer text-center py-4">
+    <div class="container-fluid px-4 px-lg-5">
+      <div class="d-flex flex-wrap justify-content-center gap-4 small fw-semibold mb-2">
+        <a href="#about-page" class="text-decoration-none text-muted mx-1" onclick="return goToInfoPage('about-page', event)">About Us</a>
+        <a href="#faqs-page" class="text-decoration-none text-muted mx-1" onclick="return goToInfoPage('faqs-page', event)">FAQs</a>
+        <a href="#terms-page" class="text-decoration-none text-muted mx-1" onclick="return goToInfoPage('terms-page', event)">Terms of Use</a>
+        <a href="#privacy-page" class="text-decoration-none text-muted mx-1" onclick="return goToInfoPage('privacy-page', event)">Privacy Policy</a>
+      </div>
+      <p class="small text-muted mb-0 mt-2">&copy; 2026 PetFinder Hub System. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  <script src="script_landing.js?v=20260613-info2"></script>
+  <script>
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootLandingInfoPages);
+    } else if (typeof bootLandingInfoPages === 'function') {
+      bootLandingInfoPages();
+    }
+  </script>
+</body>
+
+</html>

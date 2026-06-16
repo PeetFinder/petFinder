@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/petfinder/">
+  <script src="js/site.js"></script>
+  <title>PetFinder - Admin Login</title>
+  <link rel="icon" type="image/png" href="LOGO.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style_landing.css">
+</head>
+<body class="landing-body">
+
+  <nav class="navbar navbar-expand-lg landing-navbar py-3">
+    <div class="container-fluid px-4 px-lg-5">
+      <a class="navbar-brand fw-bold fs-3 landing-brand d-inline-flex align-items-center gap-2" href="landing.html"><img src="LOGO.png" alt="" class="brand-logo" width="34" height="34"><span>PetFinder</span></a>
+      <a href="landing.html" class="btn btn-outline-sage fw-bold px-3">Back</a>
+    </div>
+  </nav>
+
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-5">
+        <div class="landing-feature-card p-4 p-md-5 shadow-sm">
+          <div class="text-center mb-4">
+            <div class="ui-feature-icon mx-auto">ADM</div>
+            <h2 class="fw-bold mt-2" style="color: var(--primary-sage);">Pet Finder Admin</h2>
+            <p class="text-muted small mb-0">Sign in to manage all lost pet reports.</p>
+          </div>
+
+          <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+            <div class="mb-3">
+              <label for="adminLoginEmail" class="form-label fw-bold small text-secondary">Admin Email</label>
+              <input type="email" class="form-control py-2" id="adminLoginEmail" placeholder="e.g. eriane_admin@petfinder.com" required>
+            </div>
+            <div class="mb-3">
+              <label for="adminLoginPassword" class="form-label fw-bold small text-secondary">Password</label>
+              <div class="password-input-wrap">
+                <input type="password" class="form-control py-2" id="adminLoginPassword" placeholder="Enter password" required>
+                <button type="button" class="password-toggle-btn" data-password-toggle="adminLoginPassword"
+                  aria-label="Show password">
+                  <svg class="password-eye-show" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <svg class="password-eye-hide" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <path
+                      d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                    </path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-sage w-100 py-2 fw-bold">LOG IN AS ADMIN</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  <script src="js/api.js"></script>
+  <script src="script.js?v=20260614"></script>
+</body>
+</html>

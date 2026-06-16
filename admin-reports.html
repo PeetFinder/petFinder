@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/petfinder/">
+  <script src="js/site.js"></script>
+  <title>PetFinder - Admin Reports</title>
+  <link rel="icon" type="image/png" href="LOGO.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin-style.css">
+</head>
+<body class="admin-panel-body" data-admin-page="reports">
+  <nav class="navbar navbar-expand-lg custom-navbar py-3 sticky-top">
+    <div class="container-fluid px-4 px-lg-5">
+      <a class="navbar-brand fw-bold fs-3 d-inline-flex align-items-center gap-2" href="landing.html"><img src="LOGO.png" alt="" class="brand-logo" width="34" height="34"><span>PetFinder</span></a>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+    <div id="adminNotAllowed" class="alert alert-danger d-none" role="alert">
+      <strong>Access denied.</strong> Admin login required.
+      <div class="mt-3">
+        <a href="admin-auth.html" class="btn btn-sage fw-bold btn-sm">Go to Admin Login</a>
+        <a href="landing.html" class="btn btn-outline-secondary fw-bold btn-sm ms-2">Back to Landing</a>
+      </div>
+    </div>
+
+    <div class="custom-card p-4 my-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <h2 class="fw-bold section-title" style="color: var(--primary-sage);">Admin - Pet Lost Reports</h2>
+        <span class="badge bg-light text-muted border fw-semibold" id="adminStatsBadge">Loading...</span>
+      </div>
+      <p class="small text-muted mb-3">Makikita dito ang eksaktong message na ininput nila sa report (field: <em>details</em>).</p>
+
+      <div class="row g-3 align-items-end mb-4">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Species</label>
+          <select id="adminSpeciesFilter" class="form-select">
+            <option value="">All</option>
+            <option value="Dog">Dog</option>
+            <option value="Cat">Cat</option>
+            <option value="Bird">Bird</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Status</label>
+          <select id="adminStatusFilter" class="form-select">
+            <option value="">All</option>
+            <option value="lost">Lost</option>
+            <option value="found">Found</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Location keyword</label>
+          <input type="text" id="adminLocationFilter" class="form-control" placeholder="e.g. Barangay San Miguel">
+        </div>
+        <div class="col-md-2 d-grid">
+          <button type="button" class="btn btn-sage fw-bold" id="adminApplyFilters">Apply</button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle">
+          <thead style="background-color: rgba(110, 142, 118, 0.1);">
+            <tr>
+              <th>Pet</th>
+              <th>Species / Breed</th>
+              <th>Location</th>
+              <th>Date Lost</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminReportsTbody">
+            <tr><td colspan="6" class="text-center text-muted py-4">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Reuse minimal admin modal (separate from main app modal to avoid missing IDs) -->
+  <div id="adminPetDetailsModal" class="my-account-modal" style="display:none; position:fixed; inset:0; background: rgba(0,0,0,0.35); align-items:center; justify-content:center; z-index:9999;">
+    <div class="my-account-box max-width-600" style="background:#fff; border-radius:14px; padding:18px; position:relative;">
+      <button type="button" class="btn-close position-absolute top-0 end-0 m-3" onclick="closeAdminPetDetailsModal()"></button>
+      <h3 class="fw-bold mb-3 section-title" style="color: var(--primary-sage);">Pet Report Details</h3>
+
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <span class="badge bg-light text-muted border">ID: <span id="adminDetailsId">-</span></span>
+        <span class="badge" id="adminDetailsFoundBadge" style="display:none; background-color: #198754; color:#fff;">Found</span>
+        <span class="badge" id="adminDetailsLostBadge" style="background-color: #dc3545; color:#fff;">Lost</span>
+      </div>
+
+      <div class="profile-section mb-3 p-3 bg-light rounded">
+        <label class="form-label fw-semibold small mb-2">Update Status (Admin only)</label>
+        <select id="adminDetailsStatusSelect" class="form-select form-select-sm">
+          <option value="lost">Lost</option>
+          <option value="found">Found</option>
+        </select>
+        <small class="text-muted d-block mt-2">Choose the status, then click <strong>Save</strong>. This updates MySQL and the client view.</small>
+        <div id="adminSaveStatusError" class="alert alert-danger small py-2 px-3 mt-2 mb-0" style="display:none;" role="alert"></div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="profile-section mb-2 p-3 bg-light rounded">
+            <label class="small fw-bold text-muted d-block">Pet Name</label>
+            <p class="mb-0 fw-semibold" id="adminDetailsPetName">--</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="profile-section mb-2 p-3 bg-light rounded">
+            <label class="small fw-bold text-muted d-block">Species / Breed</label>
+            <p class="mb-0 fw-semibold" id="adminDetailsSpeciesBreed">--</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="profile-section mb-2 p-3 bg-light rounded">
+            <label class="small fw-bold text-muted d-block">Location</label>
+            <p class="mb-0 fw-semibold" id="adminDetailsLocation">--</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="profile-section mb-2 p-3 bg-light rounded">
+            <label class="small fw-bold text-muted d-block">Date Lost</label>
+            <p class="mb-0 fw-semibold" id="adminDetailsDateLost">--</p>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="profile-section p-3 bg-light rounded">
+            <label class="small fw-bold text-muted d-block">Pet Lost Message (details)</label>
+            <p class="mb-0 fw-semibold" id="adminDetailsMessage" style="white-space: pre-wrap;">--</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-3">
+        <button type="button" class="btn btn-sage fw-bold" id="adminSaveStatusBtn"
+          onclick="handleAdminSaveStatus()">Save</button>
+        <button type="button" class="btn btn-outline-danger fw-bold" id="adminDeleteReportBtn"
+          onclick="handleAdminDeleteActiveReport()">Delete Report</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  <script src="js/api.js"></script>
+  <script src="script.js?v=20260610e"></script>
+  <script src="admin-panel.js"></script>
+  <script>
+    function getAllLostPetReportsForAdmin() {
+      try {
+        const stored = localStorage.getItem('petfinderLostPets');
+        if (stored) return JSON.parse(stored);
+      } catch (e) {}
+      return [];
+    }
+
+    function isAdminSession() {
+      // reuse helper from script.js
+      if (typeof isCurrentUserAdmin === 'function') return isCurrentUserAdmin();
+      return false;
+    }
+
+    function closeAdminPetDetailsModal() {
+      const modal = document.getElementById('adminPetDetailsModal');
+      modal.style.display = 'none';
+      adminActiveReport = null;
+    }
+
+    let adminActiveReport = null;
+    let adminReportsCache = [];
+
+    function handleAdminDeleteReport(reportId) {
+      if (typeof adminDeleteLostPetReport !== 'function') return;
+      if (!adminDeleteLostPetReport(reportId)) return;
+
+      closeAdminPetDetailsModal();
+      applyAdminFilters();
+    }
+
+    function handleAdminDeleteActiveReport() {
+      if (!adminActiveReport || !adminActiveReport.id) return;
+      handleAdminDeleteReport(adminActiveReport.id);
+    }
+
+    function openAdminPetDetailsModal(reportId) {
+      hideAdminSaveStatusError();
+      const reports = adminReportsCache.length ? adminReportsCache : getAllLostPetReportsForAdmin();
+      const report = reports.find(r => r.id === reportId);
+      if (!report) return;
+      adminActiveReport = report;
+
+      document.getElementById('adminDetailsId').textContent = report.id || '-';
+      document.getElementById('adminDetailsPetName').textContent = report.name || '--';
+      document.getElementById('adminDetailsSpeciesBreed').textContent = (report.species || '--') + ' / ' + (report.breed || '--');
+      document.getElementById('adminDetailsLocation').textContent = report.location || '--';
+      document.getElementById('adminDetailsDateLost').textContent = report.dateLost || '--';
+      document.getElementById('adminDetailsMessage').textContent = report.details || '—';
+
+      updateAdminModalStatusBadges(report);
+      const statusSelect = document.getElementById('adminDetailsStatusSelect');
+      if (statusSelect) {
+        const found = typeof isPetFound === 'function' ? isPetFound(report) : !!report.returned;
+        statusSelect.value = found ? 'found' : 'lost';
+      }
+
+      document.getElementById('adminPetDetailsModal').style.display = 'flex';
+    }
+
+    function updateAdminModalStatusBadges(report) {
+      const foundBadge = document.getElementById('adminDetailsFoundBadge');
+      const lostBadge = document.getElementById('adminDetailsLostBadge');
+      if (!foundBadge || !lostBadge || !report) return;
+
+      const found = typeof isPetFound === 'function' ? isPetFound(report) : !!report.returned;
+      if (found) {
+        foundBadge.style.display = 'inline-block';
+        lostBadge.style.display = 'none';
+      } else {
+        foundBadge.style.display = 'none';
+        lostBadge.style.display = 'inline-block';
+      }
+    }
+
+    function showAdminSaveStatusError(message) {
+      const el = document.getElementById('adminSaveStatusError');
+      if (!el) return;
+      el.textContent = message || 'Failed to save status to the database.';
+      el.style.display = 'block';
+    }
+
+    function hideAdminSaveStatusError() {
+      const el = document.getElementById('adminSaveStatusError');
+      if (el) {
+        el.textContent = '';
+        el.style.display = 'none';
+      }
+    }
+
+    function handleAdminSaveStatus() {
+      if (!adminActiveReport || !adminActiveReport.id) return;
+
+      const statusSelect = document.getElementById('adminDetailsStatusSelect');
+      if (!statusSelect) return;
+
+      hideAdminSaveStatusError();
+
+      const found = statusSelect.value === 'found';
+      const saveBtn = document.getElementById('adminSaveStatusBtn');
+      if (saveBtn) saveBtn.disabled = true;
+
+      const finishSave = function (updated) {
+        if (updated) {
+          const normalized = typeof normalizeReportRecord === 'function'
+            ? normalizeReportRecord(updated)
+            : updated;
+          adminReportsCache = adminReportsCache.map(function (r) {
+            return r.id === normalized.id ? normalized : r;
+          });
+        }
+        applyAdminFilters();
+        if (saveBtn) saveBtn.disabled = false;
+        closeAdminPetDetailsModal();
+      };
+
+      const currentlyFound = typeof isPetFound === 'function'
+        ? isPetFound(adminActiveReport)
+        : !!adminActiveReport.returned;
+      if (currentlyFound === found) {
+        finishSave(adminActiveReport);
+        return;
+      }
+
+      if (typeof adminUpdatePetReportStatus !== 'function') {
+        showAdminSaveStatusError('Save handler is not available.');
+        if (saveBtn) saveBtn.disabled = false;
+        return;
+      }
+
+      adminUpdatePetReportStatus(adminActiveReport.id, found).then(function (updated) {
+        finishSave(updated);
+      }).catch(function (err) {
+        showAdminSaveStatusError(err && err.message ? err.message : 'Failed to save status to the database.');
+        if (saveBtn) saveBtn.disabled = false;
+      });
+    }
+
+    function renderAdminReportsTable(filtered) {
+      const tbody = document.getElementById('adminReportsTbody');
+      const foundCount = filtered.filter(function (r) {
+        return typeof isPetFound === 'function' ? isPetFound(r) : !!r.returned;
+      }).length;
+      const lostCount = filtered.length - foundCount;
+      document.getElementById('adminStatsBadge').textContent =
+        filtered.length + ' reports • ' + lostCount + ' lost • ' + foundCount + ' found';
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No reports match filters.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(r => {
+        const found = typeof isPetFound === 'function' ? isPetFound(r) : !!r.returned;
+        const statusBadge = found
+          ? '<span class="badge bg-success">Found</span>'
+          : '<span class="badge bg-danger">Lost</span>';
+
+        return `
+          <tr>
+            <td>
+              <div class="fw-bold">${r.name || '--'}</div>
+              <div class="small text-muted">Owner: ${r.ownerName || '—'}</div>
+            </td>
+            <td>
+              <div class="small">${r.species || '--'} <span class="text-muted">•</span> ${r.breed || '--'}</div>
+            </td>
+            <td>${r.location || '--'}</td>
+            <td>${r.dateLost || '--'}</td>
+            <td>${statusBadge}</td>
+            <td class="text-end">
+              <div class="d-inline-flex flex-wrap gap-1 justify-content-end">
+                <button type="button" class="btn btn-sm btn-outline-sage fw-bold" onclick="openAdminPetDetailsModal('${r.id}')">Edit</button>
+                <button type="button" class="btn btn-sm btn-outline-danger fw-bold" onclick="handleAdminDeleteReport('${r.id}')">Delete</button>
+              </div>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    function applyAdminFilters() {
+      const tbody = document.getElementById('adminReportsTbody');
+      const species = document.getElementById('adminSpeciesFilter').value;
+      const status = document.getElementById('adminStatusFilter').value;
+      const locKeyword = (document.getElementById('adminLocationFilter').value || '').trim();
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Loading...</td></tr>';
+
+      if (typeof usePetFinderBackend === 'function' && usePetFinderBackend()) {
+        PetFinderAPI.getAdminReports(species, locKeyword, status).then(function (res) {
+          adminReportsCache = (res.reports || []).map(function (r) {
+            return typeof normalizeReportRecord === 'function' ? normalizeReportRecord(r) : r;
+          });
+          renderAdminReportsTable(adminReportsCache);
+        }).catch(function (err) {
+          tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">' + (err.message || 'Failed to load reports.') + '</td></tr>';
+        });
+        return;
+      }
+
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Database hindi connected. Buksan ang site sa XAMPP URL at i-start ang Apache + MySQL.</td></tr>';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof ensureDefaultAdminAccount === 'function' && !(typeof usePetFinderBackend === 'function' && usePetFinderBackend())) {
+        ensureDefaultAdminAccount();
+      }
+
+      const notAllowed = document.getElementById('adminNotAllowed');
+      if (!isAdminSession()) {
+        window.location.replace('admin-auth.html');
+        return;
+      }
+
+      if (typeof initAdminPanelLayout === 'function') initAdminPanelLayout();
+
+      document.getElementById('adminApplyFilters').addEventListener('click', applyAdminFilters);
+
+      const start = function () { applyAdminFilters(); };
+      if (typeof PetFinderAPI !== 'undefined') {
+        PetFinderAPI.init().then(function (ok) {
+          if (!ok) {
+            start();
+            return;
+          }
+          return PetFinderAPI.me().then(function (res) {
+            const user = res && res.user;
+            if (!user || String(user.role || '').toLowerCase() !== 'admin') {
+              window.location.replace('admin-auth.html');
+              return;
+            }
+            start();
+          }).catch(function () {
+            window.location.replace('admin-auth.html');
+          });
+        }).catch(function () {
+          start();
+        });
+      } else {
+        start();
+      }
+    });
+
+    function goToAdminReports() {
+      window.location.href = 'admin-reports.html';
+    }
+  </script>
+</body>
+</html>
+

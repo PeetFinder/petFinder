@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/petfinder/">
+  <script src="js/site.js"></script>
+  <title>PetFinder - Admin Registered Users</title>
+   <link rel="icon" type="image/png" href="LOGO.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin-style.css">
+</head>
+<body class="admin-panel-body" data-admin-page="users">
+
+  <nav class="navbar navbar-expand-lg custom-navbar py-3 sticky-top">
+    <div class="container-fluid px-4 px-lg-5">
+      <a class="navbar-brand fw-bold fs-3 d-inline-flex align-items-center gap-2" href="landing.html"><img src="LOGO.png" alt="" class="brand-logo" width="34" height="34"><span>PetFinder</span></a>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+    <div class="custom-card p-4 my-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h2 class="fw-bold mb-0 section-title" style="color: var(--primary-sage);">Registered Users / Clients</h2>
+        <span class="badge bg-light text-muted border fw-semibold" id="adminUsersStatsBadge">Loading...</span>
+      </div>
+      <p class="small text-muted mb-4">Listahan ng mga nag-register na pet owners at clients sa PetFinder.</p>
+
+      <div class="row g-3 align-items-end mb-4">
+        <div class="col-md-5">
+          <label class="form-label fw-semibold">Search name or email</label>
+          <input type="text" id="adminUserSearch" class="form-control" placeholder="e.g. Juan or juan@gmail.com">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Role</label>
+          <select id="adminUserRoleFilter" class="form-select">
+            <option value="">All Clients</option>
+            <option value="user">User / Client</option>
+          </select>
+        </div>
+        <div class="col-md-2 d-grid">
+          <button type="button" class="btn btn-sage fw-bold" id="adminUsersApplyFilters">Apply</button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle">
+          <thead style="background-color: rgba(110, 142, 118, 0.1);">
+            <tr>
+              <th>Client</th>
+              <th>Email</th>
+              <th>Location</th>
+              <th>Role</th>
+              <th>Registered</th>
+            </tr>
+          </thead>
+          <tbody id="adminUsersTbody">
+            <tr><td colspan="5" class="text-center text-muted py-4">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  <script src="js/api.js"></script>
+  <script src="script.js?v=20260614"></script>
+  <script src="admin-panel.js"></script>
+  <script>
+
+    function formatAdminDate(iso) {
+      if (!iso) return '—';
+      try {
+        return new Date(iso).toLocaleString('en-US', {
+          month: 'short', day: 'numeric', year: 'numeric',
+          hour: 'numeric', minute: '2-digit'
+        });
+      } catch (e) {
+        return '—';
+      }
+    }
+
+    function getInitials(name) {
+      return (name || 'U').split(' ').map(function (s) { return s[0]; }).join('').slice(0, 2).toUpperCase();
+    }
+
+    function renderAdminUsersTable(filtered) {
+      const tbody = document.getElementById('adminUsersTbody');
+      document.getElementById('adminUsersStatsBadge').textContent = filtered.length + ' registered';
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No registered users found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(function (u) {
+        const roleBadge = String(u.role || 'user').toLowerCase() === 'admin'
+          ? '<span class="badge" style="background:var(--primary-sage);">Admin</span>'
+          : '<span class="badge bg-light text-muted border">Client</span>';
+
+        return `
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <span class="admin-user-avatar-cell">${getInitials(u.name)}</span>
+                <span class="fw-bold">${u.name || '—'}</span>
+              </div>
+            </td>
+            <td>${u.email || '—'}</td>
+            <td>${u.location || '—'}</td>
+            <td>${roleBadge}</td>
+            <td class="small text-muted">${formatAdminDate(u.registeredAt)}</td>
+          </tr>`;
+      }).join('');
+    }
+
+    function applyAdminUsersFilters() {
+      const search = (document.getElementById('adminUserSearch').value || '').trim();
+      const roleFilter = document.getElementById('adminUserRoleFilter').value;
+      const tbody = document.getElementById('adminUsersTbody');
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Loading...</td></tr>';
+
+      if (typeof usePetFinderBackend === 'function' && usePetFinderBackend()) {
+        PetFinderAPI.getAdminUsers(search, roleFilter).then(function (res) {
+          renderAdminUsersTable(res.users || []);
+        }).catch(function (err) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">' + (err.message || 'Failed to load users.') + '</td></tr>';
+        });
+        return;
+      }
+
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">Database hindi connected. Buksan ang site sa XAMPP URL at i-start ang Apache + MySQL.</td></tr>';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof initAdminPanelLayout === 'function') initAdminPanelLayout();
+
+      document.getElementById('adminUsersApplyFilters').addEventListener('click', applyAdminUsersFilters);
+      document.getElementById('adminUserSearch').addEventListener('input', applyAdminUsersFilters);
+
+      const start = function () { applyAdminUsersFilters(); };
+      if (typeof PetFinderAPI !== 'undefined') {
+        PetFinderAPI.init().finally(start);
+      } else {
+        start();
+      }
+    });
+  </script>
+</body>
+</html>

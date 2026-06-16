@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteBase /petfinder/
+
+# Send folder root to landing page
+DirectoryIndex index.php landing.html

@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/petfinder/">
+  <script src="js/site.js"></script>
+  <title>PetFinder - Guest Dashboard</title>
+   <link rel="icon" type="image/png" href="LOGO.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="guest-dashboard-page">
+
+  <nav class="navbar navbar-expand-lg custom-navbar py-3 sticky-top">
+    <div class="container-fluid px-4 px-lg-5">
+      <a class="navbar-brand fw-bold fs-3 d-inline-flex align-items-center gap-2" href="landing.html"><img src="LOGO.png" alt="" class="brand-logo" width="34" height="34"><span>PetFinder</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#guestNavbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-between" id="guestNavbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item"><a class="nav-link active" href="guest-dashboard.html">Guest Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-guest-auth>Report Lost Pet</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#map-page">Community Map</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+          <a href="landing.html" class="btn btn-outline-secondary fw-bold px-3">Back to Home</a>
+          <a href="auth.html" class="btn btn-outline-sage fw-bold px-4">Login / Register</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+    <div id="guest-main-content">
+
+    <section class="custom-card p-4 my-4">
+      <form class="row g-3 align-items-center" onsubmit="redirectGuestToAuth(event); return false;">
+        <div class="col-xl-4 col-lg-12">
+          <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
+            <label class="text-nowrap fw-bold mb-0">Search for Lost Pets:</label>
+            <input type="text" class="form-control py-2" placeholder="Keywords, breed, location..." readonly
+              onclick="redirectGuestToAuth(event)">
+          </div>
+        </div>
+        <div class="col-xl-2 col-md-4">
+          <select class="form-select py-2 fw-semibold text-muted" disabled>
+            <option selected>Select Species</option>
+          </select>
+        </div>
+        <div class="col-xl-2 col-md-4">
+          <select class="form-select py-2 fw-semibold text-muted" disabled>
+            <option selected>Select Breed</option>
+          </select>
+        </div>
+        <div class="col-xl-2 col-md-4">
+          <input type="date" class="form-control py-2 text-muted" disabled title="Date Lost">
+        </div>
+        <div class="col-xl-2 col-md-12">
+          <button type="submit" class="btn btn-sage fw-bold w-100 py-2">SEARCH</button>
+        </div>
+      </form>
+      <p class="small text-muted mb-0 mt-2 text-center">Search requires an account. <a href="auth.html"
+          class="fw-semibold text-decoration-none" style="color: var(--primary-sage);">Log in or register</a> to use
+        filters.</p>
+    </section>
+
+    <section class="my-4">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <h4 class="fw-bold mb-0 d-flex align-items-center gap-2" style="color: var(--primary-sage);">
+          Recent Lost Pet Reports
+        </h4>
+        <span class="badge bg-light text-muted border fw-semibold">Preview only — click any card to sign in</span>
+      </div>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4" id="guestLostPetReportsContainer">
+      </div>
+    </section>
+
+    <section class="my-5">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <h4 class="fw-bold mb-3 section-title" style="color: var(--primary-sage);">Live Community Locator Map</h4>
+          <div class="map-canvas-box shadow-sm vector-map-bg" style="cursor: pointer;" onclick="redirectGuestToAuth(event)">
+            <div class="map-road" style="width: 100%; height: 20px; top: 30%;"></div>
+            <div class="map-road" style="width: 15px; height: 100%; left: 45%;"></div>
+            <div class="map-road" style="width: 100%; height: 15px; top: 75%;"></div>
+            <div class="text-center p-3 position-relative"
+              style="z-index: 5; background: rgba(255,255,255,0.9); border-radius: 8px; border: 1px solid var(--primary-sage);">
+              <span class="ui-feature-icon d-inline-flex mb-2">MAP</span>
+              <span class="fw-bold text-dark d-block">Interactive Geographic Feed Viewer</span>
+              <p class="small text-muted mb-2">Log in to launch the full map workspace.</p>
+              <span class="badge btn-sage px-3 py-2 fw-bold" style="font-size: 11px;">LOGIN TO OPEN MAP</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <h4 class="fw-bold mb-3 section-title" style="color: var(--primary-sage);">Recent Sighting Feeds</h4>
+          <div class="card custom-card p-3" style="height: 380px; overflow-y: auto;">
+            <div class="list-group list-group-flush small">
+              <div class="list-group-item bg-transparent px-0 py-3 guest-locked-card" role="button" tabindex="0"
+                onclick="redirectGuestToAuth(event)">
+                <span class="badge bg-warning text-dark me-2">Verified</span>
+                <strong class="d-block mt-1">Calico Cat Sighted</strong>
+                <p class="mb-1 text-muted">Seen wandering near Market Plaza (Poblacion Area).</p>
+                <small class="text-secondary">45 mins ago · Login to view</small>
+              </div>
+              <div class="list-group-item bg-transparent px-0 py-3 guest-locked-card" role="button" tabindex="0"
+                onclick="redirectGuestToAuth(event)">
+                <span class="badge bg-secondary me-2">Unverified</span>
+                <strong class="d-block mt-1">Golden Retriever Sighting</strong>
+                <p class="mb-1 text-muted">Spotted running around Brgy. Hall track.</p>
+                <small class="text-secondary">2 hours ago · Login to view</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    </div>
+
+    <div id="info-pages-mount"></div>
+
+  </div>
+
+  <footer class="site-footer text-center py-4">
+    <div class="container-fluid px-4 px-lg-5">
+      <div class="d-flex flex-wrap justify-content-center gap-4 small fw-semibold mb-2">
+        <a href="landing.html#about-page" class="text-decoration-none text-muted mx-1" onclick="return goToInfoPage('about-page', event)">About Us</a>
+        <a href="landing.html#faqs-page" class="text-decoration-none text-muted mx-1" onclick="return goToInfoPage('faqs-page', event)">FAQs</a>
+        <a href="landing.html#terms-page" class="text-decoration-none text-muted mx-1" onclick="return goToInfoPage('terms-page', event)">Terms of Use</a>
+        <a href="landing.html#privacy-page" class="text-decoration-none text-muted mx-1" onclick="return goToInfoPage('privacy-page', event)">Privacy Policy</a>
+      </div>
+      <p class="small text-muted mb-0 mt-2">&copy; 2026 PetFinder Hub System. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <div id="guestPetPreviewModal" class="my-account-modal" style="display: none;">
+    <div class="my-account-box max-width-600 position-relative">
+      <button type="button" class="btn-close position-absolute top-0 end-0 m-3" onclick="closeGuestPetPreview()"></button>
+      <h3 class="fw-bold mb-4 section-title" style="color: var(--primary-sage);">Pet Report Preview</h3>
+      <div class="text-center mb-3">
+        <div id="guestPreviewPetSpeciesBadge" class="user-avatar-large mx-auto mb-2 pet-species-fallback">PET</div>
+        <h4 class="fw-bold" id="guestPreviewPetName">—</h4>
+      </div>
+      <div class="profile-section mb-2 p-2 bg-light rounded">
+        <label class="small fw-bold text-muted d-block">Species</label>
+        <p class="mb-0 fw-semibold" id="guestPreviewPetSpecies">—</p>
+      </div>
+      <div class="profile-section mb-2 p-2 bg-light rounded">
+        <label class="small fw-bold text-muted d-block">Breed</label>
+        <p class="mb-0 fw-semibold" id="guestPreviewPetBreed">—</p>
+      </div>
+      <div class="profile-section mb-2 p-2 bg-light rounded">
+        <label class="small fw-bold text-muted d-block">Location</label>
+        <p class="mb-0 fw-semibold" id="guestPreviewPetLocation">—</p>
+      </div>
+      <div class="profile-section mb-3 p-2 bg-light rounded">
+        <label class="small fw-bold text-muted d-block">Date Lost</label>
+        <p class="mb-0 fw-semibold" id="guestPreviewPetDate">—</p>
+      </div>
+      <p class="small text-muted text-center mb-3">Log in or register to report sightings or manage pets.</p>
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary w-50 fw-bold" onclick="closeGuestPetPreview()">Close</button>
+        <button type="button" class="btn btn-sage w-50 fw-bold" onclick="redirectGuestToAuth(event)">Login / Register</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  <script src="script_landing.js?v=20260613-info2"></script>
+  <script src="js/api.js"></script>
+  <script src="script_guest.js"></script>
+</body>
+
+</html>

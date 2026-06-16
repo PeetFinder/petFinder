@@ -1,0 +1,949 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/petfinder/">
+  <script src="js/site.js"></script>
+  <title>PetFinder - Lost Pet Reporting & Community Locator</title>
+   <link rel="icon" type="image/png" href="LOGO.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+</head>
+<div id="petDetailsModal" class="my-account-modal" style="display: none;">
+  <div class="my-account-box max-width-600 position-relative">
+    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" onclick="closePetDetailsModal()"></button>
+
+    <h3 class="fw-bold mb-4 section-title" style="color: var(--primary-sage);" id="modalModalTitle">Pet Report Details</h3>
+
+    <div id="petViewMode">
+      <div class="text-center mb-3">
+        <div id="modalPetEmoji" class="user-avatar-large mx-auto mb-2 pet-species-fallback">PET</div>
+        <h4 class="fw-bold mb-2" id="modalPetName">--</h4>
+        <span class="badge bg-danger" id="modalPetStatusBadge">Lost</span>
+      </div>
+      <div class="profile-section mb-2 p-2 bg-light rounded">
+        <label class="small fw-bold text-muted d-block">Species</label>
+        <p class="mb-0 fw-semibold" id="modalPetSpecies">--</p>
+      </div>
+      <div class="profile-section mb-2 p-2 bg-light rounded">
+        <label class="small fw-bold text-muted d-block">Breed</label>
+        <p class="mb-0 fw-semibold" id="modalPetBreed">--</p>
+      </div>
+      <div class="profile-section mb-2 p-2 bg-light rounded">
+        <label class="small fw-bold text-muted d-block">Last Known Location</label>
+        <p class="mb-0 fw-semibold" id="modalPetLocation">--</p>
+      </div>
+      <div class="profile-section mb-3 p-2 bg-light rounded">
+        <label class="small fw-bold text-muted d-block">Date Lost</label>
+        <p class="mb-0 fw-semibold" id="modalPetDate">--</p>
+      </div>
+
+      <div class="d-flex gap-2 mt-4" id="petDetailsOwnerActions" style="display: none;">
+        <button type="button" class="btn btn-sage fw-bold w-100 py-2" id="petDetailsEditBtn"
+          onclick="switchPetToEditMode()">Edit Report</button>
+      </div>
+    </div>
+
+    <div id="petEditMode" style="display: none;">
+      <form id="editPetForm" onsubmit="handleUpdatePetReport(event)">
+        <input type="hidden" id="editPetId">
+        <div class="mb-2">
+          <label class="form-label fw-semibold small">Pet's Name</label>
+          <input type="text" class="form-control py-1.5" id="editPetNameInput" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label fw-semibold small">Species</label>
+          <select class="form-select py-1.5" id="editPetSpeciesSelect"
+            onchange="filterBreeds('editPetSpeciesSelect', 'editPetBreedSelect')" required>
+            <option value="Dog">Dog</option>
+            <option value="Cat">Cat</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="form-label fw-semibold small">Breed</label>
+          <select class="form-select py-1.5" id="editPetBreedSelect" required>
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="form-label fw-semibold small">Last Known Location</label>
+          <input type="text" class="form-control py-1.5" id="editPetLocationInput" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">Date Lost</label>
+          <input type="date" class="form-control py-1.5" id="editPetDateInput" required>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-sage fw-bold w-50 py-2">Save Changes</button>
+          <button type="button" class="btn btn-outline-secondary fw-bold w-50 py-2"
+            onclick="switchPetToViewMode()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<body>
+  <!-- Guest Dashboard Section -->
+  <div id="guest-dashboard" class="page-section" style="display: none;">
+    <div class="custom-card p-5 my-4 text-center">
+      <h2 class="fw-bold mb-3">Welcome, Guest!</h2>
+      <p class="text-muted mb-2">This guest dashboard is now linked from the landing page for a seamless preview
+        experience.</p>
+      <p class="text-muted mb-4">You are currently viewing in Guest Mode. To report a lost pet or access full features,
+        please log in.</p>
+      <div class="d-flex justify-content-center flex-wrap gap-3">
+        <a href="auth.html" class="btn btn-sage px-4">Login / Register</a>
+        <button class="btn btn-outline-sage px-4" onclick="showSection('map-page')">View Public Map</button>
+        <a href="landing.html" class="btn btn-outline-secondary px-4">Back to Landing</a>
+      </div>
+    </div>
+  </div>
+  <nav class="navbar navbar-expand-lg custom-navbar py-3 sticky-top">
+    <div class="container-fluid px-4 px-lg-5">
+      <a class="navbar-brand fw-bold fs-3 d-inline-flex align-items-center gap-2" href="index.html" onclick="showSection('main-page'); return false;"><img src="LOGO.png" alt="" class="brand-logo" width="34" height="34"><span>PetFinder</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html#main-page" id="nav-home" onclick="return showAppSection('main-page', event)">Home</a>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="index.html#report-page" id="nav-report" onclick="return showAppSection('report-page', event)">Report
+              Lost Pet</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#map-page" id="nav-map" onclick="return showAppSection('map-page', event)">Community
+              Map</a></li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-2">
+          <a href="auth.html" class="btn btn-outline-sage fw-bold px-4" id="nav-auth-btn">Login / Register</a>
+          <div id="nav-notifications" class="nav-notifications d-none position-relative">
+            <button type="button" id="navNotifBellBtn" class="nav-notif-bell-btn" aria-label="Your Pet Alerts"
+              title="Your Pet Alerts" aria-expanded="false" aria-controls="navNotifDropdown">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span id="navNotifBellBadge" class="nav-notif-bell-badge" style="display: none;">0</span>
+            </button>
+            <div id="navNotifDropdown" class="nav-notif-dropdown" style="display: none;" role="dialog"
+              aria-label="Your Pet Alerts">
+              <div class="nav-notif-dropdown-header">
+                <h6 class="fw-bold mb-1" style="color: var(--primary-sage);">Your Pet Alerts</h6>
+                <p class="small text-muted mb-0">Private messages about pets you reported.</p>
+              </div>
+              <div id="ownerNotificationsList" class="owner-notifications-list"></div>
+            </div>
+          </div>
+          <div id="nav-account" class="nav-account d-none position-relative">
+            <button type="button" id="navUserBtn" class="nav-user" title="My Account" aria-label="My Account"
+              aria-expanded="false" aria-controls="navAccountDropdown">
+              <span id="nav-user-initials" class="nav-user-initials">U</span>
+            </button>
+            <div id="navAccountDropdown" class="nav-account-dropdown" style="display: none;" role="dialog"
+              aria-label="My Account">
+              <div class="nav-account-dropdown-header">
+                <h6 class="fw-bold mb-1" style="color: var(--primary-sage);">My Account</h6>
+                <p class="small text-muted mb-0">View and update your profile information.</p>
+              </div>
+              <div class="nav-account-dropdown-body">
+                <div id="navAccountViewMode">
+                  <div class="text-center mb-3">
+                    <div class="user-avatar-large mx-auto mb-2 nav-account-avatar" id="userAvatarLarge"></div>
+                  </div>
+                  <div class="profile-section mb-3 p-3 bg-light rounded">
+                    <label class="small fw-bold text-muted mb-2 d-block">FULL NAME</label>
+                    <p class="fw-semibold mb-0" id="displayUserName">--</p>
+                  </div>
+                  <div class="profile-section mb-3 p-3 bg-light rounded">
+                    <label class="small fw-bold text-muted mb-2 d-block">EMAIL ADDRESS</label>
+                    <p class="fw-semibold mb-0" id="displayUserEmail">--</p>
+                  </div>
+                  <div class="profile-section mb-3 p-3 bg-light rounded">
+                    <label class="small fw-bold text-muted mb-2 d-block">CONTACT NUMBER</label>
+                    <p class="fw-semibold mb-0" id="displayUserContact">--</p>
+                  </div>
+                  <div class="profile-section mb-3 p-3 bg-light rounded">
+                    <label class="small fw-bold text-muted mb-2 d-block">YOUR LOCATION</label>
+                    <p class="fw-semibold mb-0" id="displayUserLocation">--</p>
+                  </div>
+                  <button type="button" class="btn btn-sage fw-bold w-100 py-2" onclick="openMyAccountEditModal()">EDIT PROFILE</button>
+                </div>
+                <div id="navAccountEditMode" style="display: none;">
+                  <form id="myAccountEditForm" onsubmit="handleUpdateMyAccount(event)">
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold small">Full Name</label>
+                      <input id="editMyName" type="text" class="form-control py-2" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold small">Email Address</label>
+                      <input id="editMyEmail" type="email" class="form-control py-2" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold small">Contact Number</label>
+                      <input id="editMyContact" type="tel" class="form-control py-2"
+                        placeholder="09XX XXX XXXX" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold small">Your Location</label>
+                      <input id="editMyLocation" type="text" class="form-control py-2"
+                        placeholder="123 Sta. Cruz St., Barangay Pagaspas, Tanauan City" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                      <button type="submit" class="btn btn-sage fw-bold py-2">SAVE CHANGES</button>
+                      <button type="button" class="btn btn-outline-secondary fw-bold py-2"
+                        onclick="closeMyAccountEditModal()">CANCEL</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+
+    <div id="main-page" class="page-section active-section">
+      <header class="hero-banner p-5 text-center my-4 shadow-sm">
+        <h1 class="display-5 fw-bold mb-2">Find Your Furry Friend.</h1>
+        <p class="h3 fw-light mb-4">Reunite with Loved Ones.</p>
+        <div class="d-sm-flex justify-content-center gap-3">
+          <button class="btn btn-coral fw-bold px-4 py-2.5 mb-2 mb-sm-0 shadow-sm"
+            onclick="showSection('report-page')">REPORT LOST PET</button>
+          <button class="btn btn-light fw-bold px-4 py-2.5 shadow-sm" style="color: var(--primary-sage);"
+            onclick="showSection('map-page')">VIEW COMMUNITY MAP</button>
+        </div>
+      </header>
+
+      <section class="custom-card p-4 my-4">
+        <form class="row g-3 align-items-center">
+          <div class="col-xl-4 col-lg-12">
+            <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
+              <label class="text-nowrap fw-bold mb-0">Search for Lost Pets:</label>
+              <input type="text" class="form-control py-2" id="homepageSearchKeywords" placeholder="Keywords, breed, location...">
+            </div>
+          </div>
+          <div class="col-xl-2 col-md-4">
+            <select class="form-select py-2 fw-semibold text-muted" id="speciesSelect"
+              onchange="filterBreeds('speciesSelect', 'breedSelect')">
+              <option value="" selected disabled>Select Species</option>
+              <option value="Dog">Dog</option>
+              <option value="Cat">Cat</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+          <div class="col-xl-2 col-md-4">
+            <input type="text" class="form-control py-2 fw-semibold text-muted" id="breedSelect"
+              list="breedSelectOptions" placeholder="Type breed here" autocomplete="off">
+            <datalist id="breedSelectOptions"></datalist>
+          </div>
+          <div class="col-xl-2 col-md-4">
+            <input type="date" class="form-control py-2 text-muted" id="homepageSearchDate" title="Date Lost">
+          </div>
+          <div class="col-xl-2 col-md-12 d-grid gap-2">
+            <button type="button" class="btn btn-sage fw-bold w-100 py-2" id="homepageSearchBtn">SEARCH</button>
+            <button type="button" class="btn btn-outline-sage fw-bold w-100 py-2" id="homepageClearSearchBtn">SHOW ALL</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="my-4">
+        <h4 class="fw-bold mb-3 d-flex align-items-center gap-2" style="color: var(--primary-sage);">
+          Recent Lost Pet Reports
+        </h4>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4" id="lostPetReportsContainer">
+          <div class="col-12"><p class="text-center text-muted py-4 mb-0">Loading lost pet reports...</p></div>
+        </div>
+      </section>
+
+      <section class="my-5">
+        <div class="row g-4">
+          <div class="col-lg-8">
+            <h4 class="fw-bold mb-3 section-title" style="color: var(--primary-sage);">Live Community Locator Map</h4>
+            <div class="map-canvas-box shadow-sm vector-map-bg" style="cursor: pointer;"
+              onclick="showSection('map-page')">
+              <div class="map-road" style="width: 100%; height: 20px; top: 30%;"></div>
+              <div class="map-road" style="width: 15px; height: 100%; left: 45%;"></div>
+              <div class="map-road" style="width: 100%; height: 15px; top: 75%;"></div>
+
+              <div class="text-center p-3 position-relative"
+                style="z-index: 5; background: rgba(255,255,255,0.9); border-radius: 8px; border: 1px solid var(--primary-sage);">
+                <span class="ui-feature-icon d-inline-flex mb-2">MAP</span>
+                <span class="fw-bold text-dark d-block">Interactive Geographic Feed Viewer</span>
+                <p class="small text-muted mb-2">Click to see the enlarged Live Grid Network Map.</p>
+                <span class="badge btn-sage px-3 py-2 fw-bold" style="font-size: 11px;">LAUNCH LIVE LOCATION
+                  WORKSPACE</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <h4 class="fw-bold mb-3 section-title" style="color: var(--primary-sage);">Recent Sighting Feeds</h4>
+            <div class="card custom-card p-3" style="height: 380px; overflow-y: auto;">
+              <div class="list-group list-group-flush small">
+                <div class="list-group-item bg-transparent px-0 py-3" style="cursor: pointer;"
+                  onclick="focusMapLocation('Poblacion')">
+                  <span class="badge bg-warning text-dark me-2">Verified</span>
+                  <strong class="d-block mt-1">Calico Cat Sighted</strong>
+                  <p class="mb-1 text-muted">Seen wandering near Market Plaza (Poblacion Area).</p>
+                  <small class="text-secondary">45 mins ago</small>
+                </div>
+                <div class="list-group-item bg-transparent px-0 py-3" style="cursor: pointer;"
+                  onclick="focusMapLocation('SanMiguel')">
+                  <span class="badge bg-secondary me-2">Unverified</span>
+                  <strong class="d-block mt-1">Golden Retriever Sighting</strong>
+                  <p class="mb-1 text-muted">Spotted running around Brgy. Hall track.</p>
+                  <small class="text-secondary">2 hours ago</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+
+    <div id="report-page" class="page-section">
+      <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
+        <button type="button" class="hero-back-btn" onclick="showSection('main-page')" aria-label="Back to Home"
+          title="Back to Home">←</button>
+        <h1 class="display-5 fw-bold mb-2">Report a Lost Pet</h1>
+        <p class="h4 fw-light mb-0">Provide complete details to alert neighboring community members immediately.</p>
+      </header>
+
+      <main class="custom-card p-4 p-md-5 my-4">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <h3 class="fw-bold mb-4 section-title" style="color: var(--primary-sage);">Public Incident Report Form</h3>
+
+            <form id="lostPetForm" onsubmit="submitLostPetReport(event)">
+              <div class="row g-3">
+                <div class="col-md-12">
+                  <label class="form-label fw-semibold">Pet's Name</label>
+                  <input type="text" class="form-control py-2" id="reportPetName" placeholder="e.g. Max, Luna, Buddy"
+                    required>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Species Identifier</label>
+            <select class="form-select py-2 fw-semibold text-muted" id="reportSpecies"
+                    onchange="filterBreeds('reportSpecies', 'reportBreed')" required>
+                    <option value="" selected disabled>Select Species</option>
+                    <option value="Dog">Dog</option>
+                    <option value="Cat">Cat</option>
+                    <option value="Others">Others</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Breed Group</label>
+                  <input class="form-control py-2 fw-semibold text-muted" id="reportBreed" list="reportBreedOptions" required placeholder="Type breed here">
+                  <datalist id="reportBreedOptions"></datalist>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Last Known Location Landmark</label>
+                  <input type="text" class="form-control py-2" id="reportLocation"
+                    placeholder="e.g. Barangay San Miguel, Near Plaza" required>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Date Lost Incident</label>
+                  <input type="date" class="form-control py-2 text-muted" id="reportDate" required>
+                </div>
+
+                <div class="col-md-12">
+                  <label class="form-label fw-semibold">Distinct Markings / Contact Details</label>
+                  <textarea class="form-control" id="reportDetails" rows="3" maxlength="1500"
+                    placeholder="Describe fur color, collar, or add your contact number..."></textarea>
+                  <div id="charWarning" class="form-text text-danger fw-bold mt-1"
+                    style="display: none; font-size: 12px;">
+                    You have reached the maximum limit of 1,500 characters!
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <label class="form-label fw-semibold">Upload Public Pet Photograph</label>
+                  <input type="file" class="form-control py-2" id="reportPhoto" accept="image/*">
+                  <div class="form-text text-muted">Provide a clear photo to accelerate retrieval detection processes.
+                  </div>
+                </div>
+
+                <div class="col-md-12 text-center d-flex gap-3 mt-4">
+                  <button type="submit" class="btn btn-coral fw-bold py-2.5 px-4 shadow-sm w-50">PUBLISH REPORT LOG</button>
+                  <button type="button" class="btn btn-outline-secondary fw-bold py-2.5 px-4 w-50"
+                    onclick="showSection('main-page')">CANCEL</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+
+    <div id="map-page" class="page-section">
+      <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
+        <button type="button" class="hero-back-btn" onclick="showSection('main-page')" aria-label="Back to Home"
+          title="Back to Home">←</button>
+        <h1 class="display-5 fw-bold mb-2">Community Locator Map Tracker</h1>
+        <p class="h4 fw-light mb-0">Monitor active incident reports and pinpoint coordinates of reported missing pets.
+        </p>
+      </header>
+
+      <main class="custom-card p-4 p-md-5 my-4">
+        <div class="row g-4">
+          <div class="col-xl-8 col-lg-7">
+            <div class="card border-0"
+              style="height: 500px; box-shadow: inset 0 0 20px rgba(0,0,0,0.05);">
+
+              <div id="googleMap" class="google-map-container" style="width: 100%; height: 100%; border-radius: 12px;"></div>
+            </div>
+
+
+            <div class="mt-4" id="belowMapDetailsContainer" style="display: none;">
+              <div class="card p-4 border-0 shadow-sm animate-fade"
+                style="background-color: #ffffff; border-radius: 12px; border-left: 5px solid var(--accent-coral) !important;">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="ui-feature-icon d-inline-flex" id="belowMapIcon" style="width:42px;height:42px;font-size:0.65rem;">MAP</span>
+                    <h5 class="fw-bold mb-0 text-dark" id="belowMapTitle">Barangay Trapiche</h5>
+                  </div>
+                  <span class="badge fw-bold px-3 py-1.5 rounded-pill text-white" id="belowMapStatusBadge"
+                    style="background-color: var(--accent-coral); font-size: 11px; animation: targetPulse 1s infinite alternate;">
+                    TARGET ACQUIRED
+                  </span>
+                </div>
+
+                <div class="p-3 mb-3" style="background-color: var(--bg-cream); border-radius: 8px;">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-white p-2 shadow-sm d-flex align-items-center justify-content-center"
+                      style="width: 50px; height: 50px; font-size: 0.65rem; font-weight: 800; color: var(--primary-sage);" id="belowMapPetEmoji">
+                      DOG
+                    </div>
+                    <div>
+                      <h4 class="fw-bold mb-0 text-dark" id="belowMapPetName" style="font-size: 18px;">Rocky</h4>
+                      <span class="text-muted small fw-semibold" id="belowMapPetBreed">German Shepherd Dog</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="small">
+                  <span class="d-block fw-bold mb-1"
+                    style="color: var(--primary-sage); font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Sighting
+                    Log</span>
+                  <p class="text-secondary mb-0" id="belowMapLog" style="font-size: 13px; line-height: 1.6;">
+                    Noticed running near the highway bypass entry point.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-4 col-lg-5">
+            <h4 class="fw-bold mb-3" style="color: var(--primary-sage);">Active Incident Location Pins</h4>
+            <p class="small text-muted mb-3">Google Map — Tanauan City, Batangas. All 48 barangays are marked on the map. Click an incident pin below to focus:</p>
+
+            <div class="d-flex flex-column gap-2" style="max-height: 500px; overflow-y: auto; padding-right: 4px;">
+              <button class="map-grid-button" id="pin-Poblacion" onclick="selectMapPin('Poblacion')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <strong class="small d-block">Poblacion Area</strong>
+                  <span class="badge bg-danger rounded-circle">1</span>
+                </div>
+                <small class="text-muted d-block mt-1">Last seen: Luna (Siamese Cat) near Market Plaza.</small>
+              </button>
+
+              <button class="map-grid-button" id="pin-SanMiguel" onclick="selectMapPin('SanMiguel')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <strong class="small d-block">Barangay San Miguel</strong>
+                  <span class="badge bg-danger rounded-circle">1</span>
+                </div>
+                <small class="text-muted d-block mt-1">Last seen: Buddy (Golden Retriever) at Brgy. Hall track.</small>
+              </button>
+
+              <button class="map-grid-button" id="pin-SanJuan" onclick="selectMapPin('SanJuan')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <strong class="small d-block">Barangay San Juan</strong>
+                  <span class="badge bg-danger rounded-circle">1</span>
+                </div>
+                <small class="text-muted d-block mt-1">Last seen: Max (Aspin Dog) beside the basketball court.</small>
+              </button>
+
+              <button class="map-grid-button" id="pin-Bagumbayan" onclick="selectMapPin('Bagumbayan')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <strong class="small d-block">Bagumbayan Neighborhood</strong>
+                  <span class="badge bg-danger rounded-circle">1</span>
+                </div>
+                <small class="text-muted d-block mt-1">Last seen: Coco (Cockatiel Bird) at subdivision entrance.</small>
+              </button>
+
+              <button class="map-grid-button" id="pin-SantaMaria" onclick="selectMapPin('SantaMaria')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <strong class="small d-block">Barangay Santa Maria</strong>
+                  <span class="badge bg-danger rounded-circle">1</span>
+                </div>
+                <small class="text-muted d-block mt-1">Last seen: Milo (Pug) near bakery intersection.</small>
+              </button>
+
+              <button class="map-grid-button" id="pin-TanauanPlaza" onclick="selectMapPin('TanauanPlaza')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <strong class="small d-block">Tanauan City Plaza</strong>
+                  <span class="badge bg-danger rounded-circle">1</span>
+                </div>
+                <small class="text-muted d-block mt-1">Last seen: Bella (Shih Tzu) near park benches.</small>
+              </button>
+
+              <button class="map-grid-button" id="pin-Pagaspas" onclick="selectMapPin('Pagaspas')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <strong class="small d-block">Barangay Pagaspas</strong>
+                  <span class="badge bg-danger rounded-circle">1</span>
+                </div>
+                <small class="text-muted d-block mt-1">Last seen: Oliver (Persian Cat) beside talipapa terminal.</small>
+              </button>
+
+              <button class="map-grid-button" id="pin-Trapiche" onclick="selectMapPin('Trapiche')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <strong class="small d-block">Barangay Trapiche</strong>
+                  <span class="badge bg-danger rounded-circle">1</span>
+                </div>
+                <small class="text-muted d-block mt-1">Last seen: Rocky (German Shepherd) near highway bypass.</small>
+              </button>
+            </div>
+
+            <div class="d-grid mt-4">
+
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+
+    <div id="about-page" class="page-section">
+      <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
+        <button type="button" class="hero-back-btn" onclick="goBackFromInfoPage()" aria-label="Back" title="Back">←</button>
+        <h1 class="display-5 fw-bold mb-2">About PetFinder</h1>
+        <p class="h4 fw-light mb-0">Our Mission, Our Vision, and the Community Behind the System</p>
+      </header>
+
+      <main class="row g-4 my-2">
+        <div class="col-md-6">
+          <div class="card custom-card h-100 p-4">
+            <h3 class="fw-bold mb-3 section-title" style="color: var(--primary-sage);">Our Mission</h3>
+            <p class="lead" style="line-height: 1.8; font-size: 16px;">
+              The primary goal of <strong>PetFinder</strong> is to serve as a bridge for the fast and safe return of
+              lost pets to their loving families. Through innovative web technology and active community participation,
+              we streamline incident reporting and tracking using a real-time locator system.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card custom-card h-100 p-4">
+            <h3 class="fw-bold mb-3 section-title" style="color: var(--primary-sage);">Our Vision</h3>
+            <p class="lead" style="line-height: 1.8; font-size: 16px;">
+              We envision a compassionate and interconnected community where no pet is ever left missing or abandoned on
+              the streets. PetFinder aims to become the leading web utility platform in the country for animal welfare,
+              community safety, and responsive locator assistance.
+            </p>
+          </div>
+        </div>
+      </main>
+
+      <section class="custom-card p-4 p-md-5 my-4">
+        <h3 class="fw-bold text-center mb-5" style="color: var(--primary-sage);">How Does PetFinder Help?</h3>
+        <div class="row text-center g-4">
+          <div class="col-md-4">
+            <div class="p-3">
+              <div class="ui-feature-icon mx-auto">RPT</div>
+              <h5 class="fw-bold">Effortless Reporting</h5>
+              <p class="text-muted small">Pet owners can quickly publish comprehensive public logs detailing pet
+                descriptions, photos, and last known locations.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3">
+              <div class="ui-feature-icon mx-auto">MAP</div>
+              <h5 class="fw-bold">Community Locator Map</h5>
+              <p class="text-muted small">An interactive geocoding canvas pinpointing coordinates of reported missing
+                pets or active sightings within the vicinity.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3">
+              <div class="ui-feature-icon mx-auto">ALRT</div>
+              <h5 class="fw-bold">Sighting Feeds</h5>
+              <p class="text-muted small">Community members can instantly submit live feedback tags or sighting tips if
+                they encounter any missing animal.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="my-4 text-center">
+        <h4 class="fw-bold mb-4" style="color: var(--primary-sage);">The Development Team</h4>
+        <div class="row justify-content-center">
+          <div class="col-md-4 col-sm-6">
+            <div class="card custom-card p-4 text-center">
+              <div class="mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 100px; height: 100px; background-color: #E2E8E4; color: var(--primary-sage);">
+                <span class="ui-feature-icon d-inline-flex" style="width:48px;height:48px;">DEV</span>
+              </div>
+              <h5 class="fw-bold mb-1">System Developers</h5>
+              <p class="text-muted small mb-0">Information Technology Students</p>
+              <p class="small fw-semibold mt-2" style="color: var(--accent-coral);">DIT 2-1 PUP STC</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+
+    <div id="faqs-page" class="page-section">
+      <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
+        <button type="button" class="hero-back-btn" onclick="goBackFromInfoPage()" aria-label="Back" title="Back">←</button>
+        <h1 class="display-5 fw-bold mb-2">Frequently Asked Questions</h1>
+        <p class="h4 fw-light mb-0">Got Questions? We Have Answers.</p>
+      </header>
+
+      <main class="custom-card p-4 p-md-5 my-4">
+        <div class="accordion" id="petfinderFaqAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapseOne"
+                aria-expanded="true">
+                How do I report a missing pet?
+              </button>
+            </h2>
+            <div id="faq-collapseOne" class="accordion-collapse collapse show" data-bs-parent="#petfinderFaqAccordion">
+              <div class="accordion-body text-muted" style="line-height: 1.6;">
+                To report a missing pet, you need to create an account or log in first. Once logged in, click on the
+                <strong>"Report Lost Pet"</strong> button on the dashboard. Fill out the application form with your
+                pet's name, species, breed, distinct markings, a recent photograph, and the last known location where
+                they went missing.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#faq-collapseTwo" aria-expanded="false">
+                What should I do if I spot a pet listed on the map?
+              </button>
+            </h2>
+            <div id="faq-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#petfinderFaqAccordion">
+              <div class="accordion-body text-muted" style="line-height: 1.6;">
+                If you happen to see an animal that matches a missing report, go to that pet's specific profile panel
+                and click the <strong>"Sighting"</strong> button. You can submit a short tip or text log detailing the
+                exact time and precise landmark coordinates where you spotted the animal to alert the owner immediately.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#faq-collapseThree" aria-expanded="false">
+                Is PetFinder free to use for everyone?
+              </button>
+            </h2>
+            <div id="faq-collapseThree" class="accordion-collapse collapse" data-bs-parent="#petfinderFaqAccordion">
+              <div class="accordion-body text-muted" style="line-height: 1.6;">
+                Yes! <strong>PetFinder Hub</strong> is an open community-driven utility tool designed entirely for
+                public animal welfare assistance. Registering an account, logging entries, publishing lost pet alerts,
+                and navigating the locator tracking map canvas are completely free of charge.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#faq-collapseFour" aria-expanded="false">
+                How does the Community Locator Map work?
+              </button>
+            </h2>
+            <div id="faq-collapseFour" class="accordion-collapse collapse" data-bs-parent="#petfinderFaqAccordion">
+              <div class="accordion-body text-muted" style="line-height: 1.6;">
+                The locator map acts as a geocoding canvas module. When users submit reports or log verified sightings,
+                the platform marks those specific geographical points. This allows residents in neighboring barangays to
+                see map flags and stay vigilant about active cases around their vicinity.
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+
+    <div id="terms-page" class="page-section">
+      <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
+        <button type="button" class="hero-back-btn" onclick="goBackFromInfoPage()" aria-label="Back" title="Back">←</button>
+        <h1 class="display-5 fw-bold mb-2">Terms of Use</h1>
+        <p class="h4 fw-light mb-0">Rules and Guidelines for Our Community Platform</p>
+      </header>
+
+      <main class="custom-card p-4 p-md-5 my-4">
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">1. Acceptance of Terms</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            By accessing and using the PetFinder Hub platform, you agree to comply with and be bound by these Terms of
+            Use. If you do not agree with any part of these rules, you are prohibited from utilizing the web system
+            resources.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">2. User Accountability & Account Security</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            To publish reports or document sighting logs, users must complete the registration form. You are entirely
+            accountable for preserving the confidentiality of your credentials and for all activities triggered under
+            your verified profile dashboard.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">3. Content Authenticity Guidelines</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            Users guarantee that all information, photographs, timestamps, and landmark map coordinates uploaded onto
+            the system are authentic, accurate, and relate to actual missing animal occurrences. Uploading fake alerts,
+            misleading updates, or malicious content is strictly prohibited and constitutes grounds for immediate
+            account suspension.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">4. Code of Conduct</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            You agree to engage with other pet owners and community members respectfully. Harassment, abusive language
+            in sighting feeds, or the exploitation of contact data gathered from the platform for commercial spam or
+            external illegal activities will not be tolerated.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">5. System Modifications</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            As an evolving framework developed for community utility support, the development team reserves the right to
+            modify features, clear legacy database elements, or adjust interfaces within the scope of academic
+            advancement and platform enhancement.
+          </p>
+        </div>
+      </main>
+    </div>
+
+
+    <div id="privacy-page" class="page-section">
+      <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
+        <button type="button" class="hero-back-btn" onclick="goBackFromInfoPage()" aria-label="Back" title="Back">←</button>
+        <h1 class="display-5 fw-bold mb-2">Privacy Policy</h1>
+        <p class="h4 fw-light mb-0">How We Protect and Handle Your Personal Information</p>
+      </header>
+
+      <main class="custom-card p-4 p-md-5 my-4">
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">1. Information We Collect</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            When you use PetFinder Hub, we collect standard credentials necessary for core feature tracking. This
+            includes your complete name, authenticated email address, custom login credentials, and public contact
+            information necessary to establish owner communication linkages.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">2. Use of System Content & Pet Data</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            All data related to missing animals—including pet names, descriptions, species identifiers, uploaded images,
+            and last known geographic parameters—is deliberately published out to the open dashboard feed to alert
+            community observers. Landmark logs submitted via the locator panel serve solely to assist active retrieval
+            procedures.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">3. Data Exposure & Map Geocoding</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            To fulfill locator assistance parameters, specific sighting inputs and relative landmark coordinates are
+            converted into visual map marks on our public geocoding canvas. We advise against supplying precise private
+            residential data unless strictly crucial for pet identification and return protocols.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">4. Security Measures & Retention</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            We employ strict structural design approaches to store profile information securely and safeguard it from
+            unapproved external intercepts. Data records remain cached on our server blocks within the duration of
+            active status operations, and users retain full rights to wipe or alter logs directly through their active
+            profile channels.
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3" style="color: var(--primary-sage);">5. Policy Changes</h5>
+          <p class="text-muted small" style="line-height: 1.7;">
+            The system administration reserves the capacity to amend privacy conditions to match security engineering
+            standards or adjust configuration needs. Continued data processing and login activity within the layout
+            after revisions take place imply consent to structural policy adaptations.
+          </p>
+        </div>
+      </main>
+    </div>
+
+    <div id="my-account-page" class="page-section d-none" aria-hidden="true"></div>
+
+    <div id="account-page" class="page-section">
+      <header class="hero-banner p-5 text-center my-4 shadow-sm">
+        <h1 class="display-5 fw-bold mb-2">Account Management</h1>
+        <p class="h4 fw-light mb-0">Manage user accounts and profiles.</p>
+      </header>
+
+      <main class="custom-card p-4 p-md-5 my-4">
+        <div class="row g-5">
+          <div class="col-lg-5">
+            <h3 class="fw-bold mb-4 section-title" style="color: var(--primary-sage);">Add New User</h3>
+            <form id="addUserForm" onsubmit="handleAddUser(event)">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Full Name</label>
+                <input id="newUserName" type="text" class="form-control py-2" placeholder="John Doe" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Email Address</label>
+                <input id="newUserEmail" type="email" class="form-control py-2" placeholder="john@example.com" required>
+              </div>
+              <div class="mb-4">
+                <label class="form-label fw-semibold">Role</label>
+                <select id="newUserRole" class="form-select py-2 fw-semibold text-muted" required>
+                  <option value="">Select Role</option>
+                  <option value="User">User</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Moderator">Moderator</option>
+                </select>
+              </div>
+              <div class="text-center d-grid">
+                <button type="submit" class="btn btn-sage fw-bold py-2.5">ADD USER</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-lg-7">
+            <h3 class="fw-bold mb-4 section-title" style="color: var(--primary-sage);">User Directory</h3>
+            <div class="account-users-table">
+              <table class="table table-sm table-hover mb-0">
+                <thead style="background-color: rgba(110, 142, 118, 0.1);">
+                  <tr>
+                    <th class="fw-bold" style="color: var(--primary-sage);">Name</th>
+                    <th class="fw-bold" style="color: var(--primary-sage);">Email</th>
+                    <th class="fw-bold" style="color: var(--primary-sage);">Role</th>
+                    <th class="fw-bold text-center" style="color: var(--primary-sage);">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                  <tr>
+                    <td colspan="4" class="text-center text-muted py-3">No users added yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="editUserModal" class="edit-user-modal" style="display: none;">
+          <div class="edit-user-box">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="fw-bold mb-0" style="color: var(--primary-sage);">Edit User</h4>
+              <button type="button" class="btn-close" onclick="closeEditModal()"></button>
+            </div>
+            <form id="editUserForm" onsubmit="handleUpdateUser(event)">
+              <input id="editUserId" type="hidden">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Full Name</label>
+                <input id="editUserName" type="text" class="form-control py-2" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Email Address</label>
+                <input id="editUserEmail" type="email" class="form-control py-2" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Role</label>
+                <select id="editUserRole" class="form-select py-2 fw-semibold text-muted" required>
+                  <option value="User">User</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Moderator">Moderator</option>
+                </select>
+              </div>
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-sage fw-bold py-2">SAVE CHANGES</button>
+                <button type="button" class="btn btn-outline-secondary fw-bold py-2"
+                  onclick="closeEditModal()">CANCEL</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+  </div>
+
+  <footer class="site-footer text-center py-4">
+    <div class="container-fluid px-4 px-lg-5">
+      <div class="d-flex flex-wrap justify-content-center gap-4 small fw-semibold mb-2">
+        <a href="index.html#terms-page" class="text-decoration-none text-muted mx-1" onclick="return showAppSection('terms-page', event)">Terms of Use</a>
+        <a href="index.html#privacy-page" class="text-decoration-none text-muted mx-1" onclick="return showAppSection('privacy-page', event)">Privacy
+          Policy</a>
+      </div>
+      <p class="small text-muted mb-0 mt-2">&copy; 2026 PetFinder Hub System. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  <script src="google_maps_config.js"></script>
+  <script src="tanauan_barangays.js"></script>
+  <script src="js/api.js"></script>
+  <script src="script.js?v=20260613a"></script>
+  <script src="map_google.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof refreshLostPetReportsFromBackend === 'function') {
+        refreshLostPetReportsFromBackend();
+      }
+    });
+  </script>
+  <script>
+    (function () {
+      const originalShowSection = window.showSection;
+      window.showSection = function (sectionId) {
+        if (sectionId === 'guest-dashboard') {
+          const sections = document.querySelectorAll('.page-section');
+          sections.forEach(sec => sec.classList.remove('active-section'));
+
+          const home = document.getElementById('main-page');
+          const guest = document.getElementById('guest-dashboard');
+          if (home) home.classList.add('active-section');
+          if (guest) guest.classList.add('active-section');
+
+          window.scrollTo(0, 0);
+          return;
+        }
+
+        if (typeof originalShowSection === 'function') {
+          originalShowSection(sectionId);
+        }
+      };
+    })();
+  </script>
+</body>
+
+</html>

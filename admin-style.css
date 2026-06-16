@@ -1,0 +1,219 @@
+/* Admin panel — glass sidebar (PetFinder sage theme) */
+.admin-panel-body {
+  background: linear-gradient(135deg, #2f3e33 0%, #3d5244 45%, #6e8e76 100%);
+  min-height: 100vh;
+}
+
+.admin-panel-body .custom-navbar {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+}
+
+.admin-shell {
+  display: flex;
+  gap: 0;
+  min-height: calc(100vh - 76px);
+  padding: 1rem 1rem 1.5rem;
+}
+
+.admin-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: rgba(47, 62, 51, 0.72);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  color: #ffffff;
+  padding: 1.25rem 0.85rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 110px);
+}
+
+.admin-sidebar-top {
+  flex: 1;
+}
+
+.admin-sidebar-footer {
+  margin-top: auto;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-sidebar-logout-btn {
+  width: 100%;
+}
+
+.admin-sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--secondary-mint), var(--primary-sage), #8fa895);
+}
+
+.admin-sidebar-brand {
+  font-weight: 800;
+  font-size: 1.35rem;
+  padding: 0.5rem 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.75rem;
+}
+
+.admin-sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 0.75rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.admin-sidebar-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-sage), var(--secondary-mint));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.admin-sidebar-profile small {
+  display: block;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.72rem;
+}
+
+.admin-sidebar-menu-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  padding: 0.5rem 0.75rem 0.35rem;
+}
+
+.admin-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+}
+
+.admin-sidebar-link:hover,
+.admin-sidebar-link.active {
+  background: rgba(110, 142, 118, 0.35);
+  color: #ffffff;
+}
+
+.admin-sidebar-link .admin-link-icon {
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.admin-sidebar-brand .brand-logo {
+  width: 2.25rem;
+  height: 2.25rem;
+  object-fit: contain;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.admin-sidebar-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-sidebar-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0.65rem 0.5rem;
+}
+
+.admin-main {
+  flex: 1;
+  min-width: 0;
+  padding-left: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-main > .container.my-4 {
+  max-width: 100%;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.admin-main .custom-card {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(110, 142, 118, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.admin-add-user-panel {
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  background: rgba(110, 142, 118, 0.08);
+  border: 1px solid rgba(110, 142, 118, 0.18);
+}
+
+.admin-add-user-form-wrap {
+  padding-top: 0.25rem;
+}
+
+.admin-user-avatar-cell {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(110, 142, 118, 0.15);
+  color: var(--primary-sage);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 991px) {
+  .admin-shell {
+    flex-direction: column;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+  }
+
+  .admin-main {
+    padding-left: 0;
+  }
+}
