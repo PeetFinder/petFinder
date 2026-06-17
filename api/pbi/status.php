@@ -22,5 +22,5 @@ json_response([
     'fallbackExcelFile' => 'pbi/PetFinder_Tanauan_Batangas_Cleaned_LATEST.xlsx',
     'sheet' => $paths['sheet_name'],
     'lastSync' => $status,
-    'tip' => 'Kung hindi lumalabas ang bagong data, isara ang Excel file at buksan ang /api/pbi/sync.php',
+    'tip' => 'Auto-sync runs after every Lost Pet Report. If charts look stale, close the Excel file and wait for the next sync.',
 ]);

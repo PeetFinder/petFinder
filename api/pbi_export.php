@@ -479,10 +479,61 @@ function sync_pbi_excel(): array
     }
 }
 
-function sync_pbi_excel_quietly(): void
+function pbi_auto_sync_enabled(): bool
+{
+    $config = require __DIR__ . '/config.php';
+
+    return !empty($config['pbi_auto_sync']);
+}
+
+function pbi_auto_refresh_enabled(): bool
+{
+    $config = require __DIR__ . '/config.php';
+
+    return !empty($config['pbi_auto_refresh']);
+}
+
+function sync_pbi_pipeline(): array
+{
+    require_once __DIR__ . '/pbi_refresh.php';
+    require_once __DIR__ . '/pbi_onedrive.php';
+
+    $excel = sync_pbi_excel();
+    $oneDrive = [
+        'success' => false,
+        'skipped' => true,
+        'message' => 'Skipped because Excel sync failed.',
+    ];
+    $powerBi = [
+        'success' => false,
+        'skipped' => true,
+        'message' => 'Skipped because Excel sync failed.',
+    ];
+
+    if ($excel['success']) {
+        if (onedrive_is_configured()) {
+            $oneDrive = onedrive_upload_after_excel_sync($excel);
+        }
+
+        if (pbi_auto_refresh_enabled()) {
+            $powerBi = trigger_powerbi_dataset_refresh();
+        }
+
+        pbi_write_sync_status(array_merge($excel, ['oneDrive' => $oneDrive, 'powerBi' => $powerBi]));
+    }
+
+    return [
+        'success' => $excel['success'],
+        'excel' => $excel,
+        'oneDrive' => $oneDrive,
+        'powerBi' => $powerBi,
+    ];
+}
+
+function sync_pbi_pipeline_quietly(): void
 {
     try {
-        sync_pbi_excel();
+        sync_pbi_pipeline();
     } catch (Throwable $e) {
         pbi_write_sync_status([
             'success' => false,
@@ -490,4 +541,10 @@ function sync_pbi_excel_quietly(): void
             'syncedAt' => date('c'),
         ]);
     }
+}
+
+/** @deprecated Use sync_pbi_pipeline_quietly() */
+function sync_pbi_excel_quietly(): void
+{
+    sync_pbi_pipeline_quietly();
 }

@@ -54,7 +54,6 @@
           <li class="nav-item"><a class="nav-link active" href="pbi/pbi.html">Analytics</a></li>
         </ul>
         <div class="d-flex align-items-center gap-2">
-          <a href="index.html#main-page" class="btn btn-outline-secondary fw-bold px-3">Back to Home</a>
           <a href="auth.html" class="btn btn-outline-sage fw-bold px-4" id="nav-auth-btn">Login / Register</a>
           <div id="nav-notifications" class="nav-notifications d-none position-relative">
             <button type="button" id="navNotifBellBtn" class="nav-notif-bell-btn" aria-label="Your Pet Alerts"
@@ -164,27 +163,34 @@
 
       <div class="alert alert-light border small mb-3 text-start" id="pbiSyncPanel">
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
-          <strong>Excel + Power BI refresh</strong>
-          <button type="button" class="btn btn-sage btn-sm fw-bold" id="pbiSyncBtn">Sync Excel Now</button>
+          <strong>Auto-sync enabled</strong>
+          <button type="button" class="btn btn-outline-sage btn-sm fw-bold" id="pbiSyncBtn">Sync Now</button>
         </div>
-        <p class="mb-2 text-muted">Ang Excel file ay may <strong>50 sample rows</strong> + <strong>real Lost Pet Reports</strong> mula sa website. Pagkatapos mag-sync, i-refresh ang Power BI Desktop.</p>
+        <p class="mb-2 text-muted">
+          New <strong>Lost Pet Reports</strong> automatically update Excel. Background sync runs every 5 minutes while this site is open, and every 10 minutes via Windows scheduled task.
+        </p>
+        <p class="mb-2 small" id="pbiAutoSyncStatus">Checking sync status...</p>
         <div id="pbiSyncResult" class="small mb-2" style="display:none;"></div>
-        <ol class="mb-2 ps-3" id="pbiRefreshSteps">
-          <li>Isara ang <code>PetFinder_Tanauan_Batangas_Cleaned.xlsx</code> kung nakabukas.</li>
-          <li>I-click ang <strong>Sync Excel Now</strong> button sa taas.</li>
-          <li>Buksan ang <code>pbi/petfinder.pbix</code> sa Power BI Desktop.</li>
-          <li><strong>Home → Refresh</strong> · i-save ang file.</li>
-          <li><strong>Home → Publish</strong> → My Workspace → Replace existing report.</li>
-          <li>Sa Power BI Service: <strong>View semantic model → Refresh</strong>.</li>
-          <li>I-refresh ang browser sa page na ito.</li>
-        </ol>
-        <p class="mb-1"><strong>Register account</strong> → Admin &gt; Registered Users lang (hindi Excel).</p>
-        <p class="mb-0">Status: <code>/api/pbi/status.php</code> · Script: <code>pbi/refresh-powerbi.ps1</code></p>
+        <p class="mb-1"><strong>Register account</strong> → Admin &gt; Registered Users only (not Excel).</p>
+        <p class="mb-2 text-muted">For instant online chart updates, enable <code>powerbi.enabled</code> in <code>api/config.php</code> or set Schedule refresh in Power BI Service (every 15 min).</p>
+
+        <details class="mt-2">
+          <summary class="fw-bold" style="cursor:pointer;">OneDrive setup (recommended for auto Power BI refresh)</summary>
+          <ol class="mb-2 mt-2 ps-3 small">
+            <li>Upload <code>PetFinder_Tanauan_Batangas_Cleaned.xlsx</code> to OneDrive (e.g. folder <code>PetFinder</code>).</li>
+            <li>Azure Portal → <strong>App registrations</strong> → New app → API permissions → <strong>Files.ReadWrite.All</strong> (Application) → Grant admin consent.</li>
+            <li>Create a <strong>client secret</strong>; copy Tenant ID, Client ID, and secret.</li>
+            <li>In <code>api/config.php</code>, set <code>onedrive.enabled</code> to <code>true</code> and fill in your Microsoft email + file path.</li>
+            <li>Power BI Desktop → change data source to the <strong>OneDrive Excel file</strong> → Publish.</li>
+            <li>Power BI Service → semantic model → <strong>Schedule refresh</strong> every 15 minutes (no gateway needed).</li>
+          </ol>
+          <p class="mb-0 small text-muted">Full steps: <code>/api/pbi/onedrive-setup.php</code></p>
+        </details>
       </div>
 
-      <iframe class="pbi-embed-frame shadow-sm" title="PetFinder Analytics Dashboard"
-        src="https://app.powerbi.com/view?r=eyJrIjoiYWI3ZGVlN2ItNzI5Ni00ZGFkLThkNTctYWRjOWNkNTcwOWUyIiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D"
-        allowfullscreen="true"></iframe>
+      <iframe id="pbiEmbedFrame" class="pbi-embed-frame shadow-sm" title="petfinderfinalpbi"
+        src="https://app.powerbi.com/view?r=eyJrIjoiMDNjZDAxOTMtMzU0YS00NzM2LThjM2YtNzY2N2FhZTkxZWM2IiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D"
+        frameborder="0" allowfullscreen="true"></iframe>
     </main>
 
   </div>
@@ -203,6 +209,7 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   <script src="js/api.js"></script>
   <script src="script.js"></script>
+  <script src="js/pbi-auto-sync.js"></script>
   <script>
     (function () {
       const btn = document.getElementById('pbiSyncBtn');
@@ -231,11 +238,27 @@
               html += '<br><span class="text-danger">Excel was open. Check the _LATEST file or close Excel and sync again.</span>';
             }
 
+            const od = data.oneDrive || {};
+            if (od.success && !od.skipped) {
+              html += '<br><strong>OneDrive updated.</strong>';
+              if (od.webUrl) {
+                html += ' <a href="' + od.webUrl + '" target="_blank" rel="noopener">Open file</a>';
+              }
+            } else if (od.skipped) {
+              html += '<br>OneDrive: not configured (see setup below).';
+            } else if (od.message) {
+              html += '<br><span class="text-warning">OneDrive: ' + od.message + '</span>';
+            }
+
             const pbi = data.powerBi || {};
             if (pbi.success && !pbi.skipped) {
-              html += '<br><strong>Power BI online refresh started.</strong> Still do Desktop Refresh + Publish once.';
+              html += '<br><strong>Power BI online refresh started.</strong> Charts will update shortly.';
             } else {
-              html += '<br><strong>Next:</strong> Open Power BI Desktop → Refresh → Publish → Refresh semantic model online.';
+              html += '<br>Excel is updated. Online charts refresh on the next scheduled sync.';
+            }
+
+            if (window.PetFinderPbiAutoSync) {
+              window.PetFinderPbiAutoSync.reloadFrames();
             }
 
             result.className = 'small mb-2';
@@ -247,7 +270,7 @@
           })
           .finally(function () {
             btn.disabled = false;
-            btn.textContent = 'Sync Excel Now';
+            btn.textContent = 'Sync Now';
           });
       });
     })();

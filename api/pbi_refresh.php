@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 function powerbi_config(): array
 {
-    $config = require dirname(__DIR__) . '/config.php';
+    $config = require __DIR__ . '/config.php';
     $pbi = $config['powerbi'] ?? [];
 
     return [
@@ -41,13 +41,10 @@ function powerbi_is_configured(): bool
 function powerbi_refresh_steps(): array
 {
     return [
-        'Isara ang PetFinder_Tanauan_Batangas_Cleaned.xlsx kung nakabukas.',
-        'Buksan ang pbi/petfinder.pbix sa Power BI Desktop.',
-        'Sa Home tab, i-click ang Refresh.',
-        'I-save ang .pbix file.',
-        'I-click ang Publish → My Workspace → Replace existing report.',
-        'Sa Power BI Service (online), buksan ang report → More options (...) → View semantic model → Refresh.',
-        'I-refresh ang browser sa Analytics page ng PetFinder.',
+        'Auto-sync is enabled: new Lost Pet Reports update Excel automatically.',
+        'For instant online chart updates, set powerbi.enabled => true in api/config.php with your workspace and dataset IDs.',
+        'Or in Power BI Service: open your semantic model → Schedule refresh → every 15 minutes (requires On-premises data gateway for the Excel file).',
+        'Close PetFinder_Tanauan_Batangas_Cleaned.xlsx if sync fails (file locked).',
     ];
 }
 

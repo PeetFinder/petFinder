@@ -1,6 +1,7 @@
 PetID,PetName,Type,Breed,Gender,Color,Size,Status,Location
-1,Ram,Others,Lion,Unknown,Unknown,Unknown,Lost,Cale
-2,tristan,Dog,Aspin,Unknown,Unknown,Unknown,Lost,Trapiche
-3,tristan,Dog,"Labrador Retriever",Unknown,Unknown,Unknown,Lost,Trapiche
-4,Neil,Others,Lion,Unknown,Unknown,Unknown,Lost,Pagaspas
-5,For,Dog,"Golden Retriever",Unknown,Unknown,Unknown,Found,Sambat
+1,yuki,Dog,Chihuahua,Unknown,Unknown,Unknown,Lost,Sala
+2,Ram,Others,Lion,Unknown,Unknown,Unknown,Lost,Cale
+3,tristan,Dog,Aspin,Unknown,Unknown,Unknown,Lost,Trapiche
+4,tristan,Dog,"Labrador Retriever",Unknown,Unknown,Unknown,Lost,Trapiche
+5,Neil,Others,Lion,Unknown,Unknown,Unknown,Lost,Pagaspas
+6,For,Dog,"Golden Retriever",Unknown,Unknown,Unknown,Found,Sambat

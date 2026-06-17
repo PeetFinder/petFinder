@@ -29,7 +29,7 @@ Write-Host ''
 Write-Host 'Next steps in Power BI Desktop:' -ForegroundColor Cyan
 $step = 1
 foreach ($line in @(
-    'Open pbi/petfinder.pbix',
+    'Open pbi/petfinderfinalpbi.pbix',
     'Home -> Refresh',
     'Save the file',
     'Home -> Publish -> My Workspace -> Replace existing report',
@@ -40,9 +40,9 @@ foreach ($line in @(
     $step++
 }
 
-$pbix = Join-Path $root 'pbi\petfinder.pbix'
+$pbix = Join-Path $root 'pbi\petfinderfinalpbi.pbix'
 if (Test-Path $pbix) {
-    $open = Read-Host 'Open petfinder.pbix now? (Y/N)'
+    $open = Read-Host 'Open petfinderfinalpbi.pbix now? (Y/N)'
     if ($open -eq 'Y' -or $open -eq 'y') {
         Start-Process $pbix
     }

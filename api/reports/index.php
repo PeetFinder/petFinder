@@ -74,13 +74,15 @@ if ($method === 'POST') {
         $fetch = db()->prepare('SELECT * FROM lost_pet_reports WHERE id = ? LIMIT 1');
         $fetch->execute([$id]);
         $row = $fetch->fetch();
-        $excelSync = sync_pbi_excel();
+        $pipeline = pbi_auto_sync_enabled() ? sync_pbi_pipeline() : ['success' => true, 'excel' => ['success' => true, 'skipped' => true], 'powerBi' => ['skipped' => true]];
 
         json_response([
             'success' => true,
             'message' => 'Report created.',
             'report' => report_to_array($row),
-            'excelSync' => $excelSync,
+            'excelSync' => $pipeline['excel'],
+            'oneDriveSync' => $pipeline['oneDrive'],
+            'powerBiSync' => $pipeline['powerBi'],
         ], 201);
     } catch (Throwable $e) {
         json_error('Failed to create report: ' . $e->getMessage(), 500);

@@ -2062,10 +2062,10 @@ function createLostPetReport(petName, species, breed, location, dateInput, repor
         return PetFinderAPI.createReport(newReport).then(function (res) {
             const excelSync = res && res.excelSync;
             if (excelSync && excelSync.success === false) {
-                alert('Report saved sa database, pero hindi na-update ang Excel file.\n\n' +
-                    (excelSync.message || 'Isara ang Excel file, tapos buksan: /api/pbi/sync.php'));
+                alert('Report saved to the database, but Excel was not updated.\n\n' +
+                    (excelSync.message || 'Close the Excel file if it is open. Auto-sync will retry shortly.'));
             } else if (excelSync && excelSync.excelLocked) {
-                alert('Report saved. Excel ay nakabukas kaya na-save sa LATEST file.\n\nIsara ang Excel at i-run ang sync sa Analytics page.');
+                alert('Report saved. Excel was open so data was written to the LATEST file.\n\nClose Excel and auto-sync will update the main file.');
             }
             return finishCreate(res.report || newReport);
         }).catch(function (err) {

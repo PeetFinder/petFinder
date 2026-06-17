@@ -319,7 +319,12 @@
           <p class="text-muted mb-4 mx-auto" style="max-width: 560px;">
             View lost pet trends, barangay report activity, and community statistics in our interactive Power BI dashboard.
           </p>
-          <a href="pbi/pbi.html" class="btn btn-sage fw-bold px-4 py-2 shadow-sm">Open Analytics Dashboard</a>
+          <div class="ratio ratio-16x9 shadow-sm rounded-3 overflow-hidden mb-3" style="background:#f5f7f5;">
+            <iframe id="pbiEmbedFrame" title="petfinderfinalpbi"
+              src="https://app.powerbi.com/view?r=eyJrIjoiMDNjZDAxOTMtMzU0YS00NzM2LThjM2YtNzY2N2FhZTkxZWM2IiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D"
+              frameborder="0" allowfullscreen="true"></iframe>
+          </div>
+          <a href="pbi/pbi.html" class="btn btn-sage fw-bold px-4 py-2 shadow-sm">Open Full Analytics Page</a>
         </div>
       </section>
     </div>
@@ -923,6 +928,7 @@
   <script src="google_maps_config.js"></script>
   <script src="tanauan_barangays.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/pbi-auto-sync.js"></script>
   <script src="script.js?v=20260613a"></script>
   <script src="map_google.js"></script>
 

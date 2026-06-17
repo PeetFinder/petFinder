@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require dirname(__DIR__) . '/bootstrap.php';
 require dirname(__DIR__) . '/pbi_export.php';
+require dirname(__DIR__) . '/pbi_onedrive.php';
 require dirname(__DIR__) . '/pbi_refresh.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -11,12 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'POST
 }
 
 try {
-    $excelResult = sync_pbi_excel();
-    $powerBiResult = ['success' => false, 'skipped' => true, 'message' => 'Excel sync failed.'];
-
-    if ($excelResult['success']) {
-        $powerBiResult = trigger_powerbi_dataset_refresh();
-    }
+    $pipeline = sync_pbi_pipeline();
+    $excelResult = $pipeline['excel'];
+    $powerBiResult = $pipeline['powerBi'];
 
     if (!$excelResult['success']) {
         json_error($excelResult['message'], 500);
@@ -33,7 +31,9 @@ try {
             'excelLocked' => $excelResult['excelLocked'] ?? false,
         ],
         'powerBi' => $powerBiResult,
+        'oneDrive' => $pipeline['oneDrive'] ?? ['skipped' => true],
         'powerBiSteps' => powerbi_refresh_steps(),
+        'oneDriveSteps' => onedrive_setup_steps(),
     ]);
 } catch (Throwable $e) {
     json_error('Power BI sync failed: ' . $e->getMessage(), 500);

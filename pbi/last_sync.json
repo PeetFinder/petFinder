@@ -1,10 +1,18 @@
 {
     "success": true,
-    "message": "Power BI Excel file updated.",
-    "file": "pbi\/PetFinder_Tanauan_Batangas_Cleaned.xlsx",
-    "sheet": "PetFinder Data",
-    "exportMode": "with_sample",
-    "rowCount": 55,
-    "syncedAt": "2026-06-17T15:14:55+02:00",
-    "excelLocked": false
+    "message": "Power BI CSV file updated.",
+    "file": "pbi\/PetFinder_Tanauan_Batangas_Cleaned.csv",
+    "rowCount": 6,
+    "syncedAt": "2026-06-17T18:24:46+02:00",
+    "powerBi": {
+        "success": false,
+        "skipped": true,
+        "message": "Power BI online refresh is not configured. Follow the manual Desktop steps.",
+        "steps": [
+            "Auto-sync is enabled: new Lost Pet Reports update Excel automatically.",
+            "For instant online chart updates, set powerbi.enabled => true in api\/config.php with your workspace and dataset IDs.",
+            "Or in Power BI Service: open your semantic model → Schedule refresh → every 15 minutes (requires On-premises data gateway for the Excel file).",
+            "Close PetFinder_Tanauan_Batangas_Cleaned.xlsx if sync fails (file locked)."
+        ]
+    }
 }
