@@ -165,6 +165,87 @@
         </div>
       </section>
 
+      <section class="custom-card p-4 p-md-5 my-4 system-overview-section">
+        <p class="text-center text-muted small mb-2 text-uppercase fw-bold" style="letter-spacing: 0.06em;">System Architecture</p>
+        <h3 class="fw-bold text-center mb-2" style="color: var(--primary-sage);">System Overview: Web UI → MySQL Database → Power BI</h3>
+        <p class="text-center text-muted small mb-4 mx-auto" style="max-width: 820px; line-height: 1.65;">
+          Ang <strong>Web UI</strong> ang data entry layer kung saan nagre-register ang users at nagsu-submit ng lost pet reports.
+          Lahat ng records ay naka-store sa <strong>MySQL database</strong> (<code>petfinder_db</code>) bilang central repository.
+          Ang data ay auto-sync sa <strong>Excel file</strong>, na ginagamit ng <strong>Power BI</strong> para sa analytics dashboard.
+        </p>
+
+        <div class="row g-3 g-lg-4 align-items-stretch system-overview-pipeline">
+          <div class="col-lg-4">
+            <div class="system-overview-block system-overview-ui h-100">
+              <div class="system-overview-badge">1</div>
+              <h5 class="fw-bold mb-1">Web UI</h5>
+              <p class="small text-muted mb-3">Data Input Layer</p>
+              <ul class="system-overview-list small">
+                <li>Report Lost Pet form</li>
+                <li>Login / Register</li>
+                <li>Admin panel (users &amp; reports)</li>
+                <li>Community map &amp; guest dashboard</li>
+                <li>Add / Update / Delete via PHP REST API</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="system-overview-block system-overview-db h-100">
+              <div class="system-overview-badge">2</div>
+              <h5 class="fw-bold mb-1">MySQL Database</h5>
+              <p class="small text-muted mb-3">Data Storage Layer</p>
+              <p class="small fw-semibold mb-2" style="color: #1f5f96;">petfinder_db</p>
+              <ul class="system-overview-list small">
+                <li><code>users</code> — registered clients</li>
+                <li><code>lost_pet_reports</code> — pet reports &amp; status</li>
+                <li>Single source of truth (XAMPP / phpMyAdmin)</li>
+                <li>Auto-sync papunta sa Excel file</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="system-overview-block system-overview-pbi h-100">
+              <div class="system-overview-badge">3</div>
+              <h5 class="fw-bold mb-1">Power BI</h5>
+              <p class="small text-muted mb-3">Visualization &amp; Reporting Layer</p>
+              <ul class="system-overview-list small">
+                <li>Kumukuha ng data mula sa Excel file</li>
+                <li>Lost / Found pet statistics</li>
+                <li>Reports by barangay &amp; pet type</li>
+                <li>Interactive dashboard (<code>petfinder.pbix</code>)</li>
+                <li>Refresh para sa latest data</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="system-overview-flow mt-4">
+          <h6 class="fw-bold text-center mb-3" style="color: var(--primary-sage);">Data Flow Summary</h6>
+          <div class="row g-2 text-center">
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="system-flow-step"><span>1</span><p>User nag-input sa Web UI</p></div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="system-flow-step"><span>2</span><p>Na-save sa MySQL</p></div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="system-flow-step"><span>3</span><p>Naka-store securely</p></div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="system-flow-step"><span>4</span><p>Auto-sync sa Excel</p></div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="system-flow-step"><span>5</span><p>Power BI mag-refresh</p></div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="system-flow-step"><span>6</span><p>Dashboard insights</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="my-4 text-center">
         <h4 class="fw-bold mb-4" style="color: var(--primary-sage);">The Development Team</h4>
         <div class="row justify-content-center">

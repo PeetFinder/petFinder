@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require dirname(__DIR__) . '/bootstrap.php';
+require_once dirname(__DIR__) . '/pbi_export.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 $id = trim((string) ($_GET['id'] ?? ''));
@@ -76,6 +77,7 @@ if ($method === 'PUT' || $method === 'PATCH') {
 
     $fetch = db()->prepare('SELECT * FROM lost_pet_reports WHERE id = ? LIMIT 1');
     $fetch->execute([$id]);
+    sync_pbi_excel_quietly();
     json_response(['success' => true, 'report' => report_to_array($fetch->fetch())]);
 }
 
@@ -96,6 +98,7 @@ if ($method === 'DELETE') {
 
     $del = db()->prepare('DELETE FROM lost_pet_reports WHERE id = ?');
     $del->execute([$id]);
+    sync_pbi_excel_quietly();
     json_response(['success' => true, 'message' => 'Report deleted.']);
 }
 

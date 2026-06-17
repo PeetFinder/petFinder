@@ -15,4 +15,18 @@ return [
         'password' => 'Kape!26',
         'location' => 'Tanauan City, Batangas',
     ],
+    // Excel export for Power BI:
+    // - database_only = website/MySQL reports only
+    // - with_sample  = sample rows + website reports
+    'pbi_export_mode' => 'with_sample',
+    'pbi_sample_row_limit' => 50,
+    // Set enabled => true and fill in IDs from Power BI Service.
+    'powerbi' => [
+        'enabled' => false,
+        'tenant_id' => '',
+        'client_id' => '',
+        'client_secret' => '',
+        'workspace_id' => '',
+        'dataset_id' => '',
+    ],
 ];

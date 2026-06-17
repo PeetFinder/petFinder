@@ -995,10 +995,17 @@ function handleUpdateMyAccount(event) {
     const user = getCurrentUser();
     if (!user) return;
 
+    const contact = sanitizeContactDigits(document.getElementById('editMyContact')?.value || user.contact || '');
+    const contactError = getRegisterContactError(contact);
+    if (contactError) {
+        alert(contactError);
+        return;
+    }
+
     const updatedUser = {
         name: document.getElementById('editMyName').value.trim() || user.name,
         email: document.getElementById('editMyEmail').value.trim() || user.email,
-        contact: document.getElementById('editMyContact').value.trim() || user.contact,
+        contact: contact,
         location: document.getElementById('editMyLocation').value.trim() || user.location
     };
 
@@ -2053,6 +2060,13 @@ function createLostPetReport(petName, species, breed, location, dateInput, repor
 
     if (typeof usePetFinderBackend === 'function' && usePetFinderBackend()) {
         return PetFinderAPI.createReport(newReport).then(function (res) {
+            const excelSync = res && res.excelSync;
+            if (excelSync && excelSync.success === false) {
+                alert('Report saved sa database, pero hindi na-update ang Excel file.\n\n' +
+                    (excelSync.message || 'Isara ang Excel file, tapos buksan: /api/pbi/sync.php'));
+            } else if (excelSync && excelSync.excelLocked) {
+                alert('Report saved. Excel ay nakabukas kaya na-save sa LATEST file.\n\nIsara ang Excel at i-run ang sync sa Analytics page.');
+            }
             return finishCreate(res.report || newReport);
         }).catch(function (err) {
             alert((err && err.message) || 'Failed to save your report to the database. Make sure you are logged in and MySQL is running.');
@@ -3006,11 +3020,50 @@ function isValidRegisterPassword(password) {
     return !getRegisterPasswordError(password);
 }
 
+function sanitizeContactDigits(value) {
+    return String(value || '').replace(/\D/g, '');
+}
+
+function bindNumericContactInput(input) {
+    if (!input || input.dataset.numericContactBound === 'true') return;
+
+    const applyDigitsOnly = function () {
+        const digits = sanitizeContactDigits(input.value);
+        if (input.value !== digits) {
+            input.value = digits;
+        }
+    };
+
+    input.addEventListener('input', applyDigitsOnly);
+    input.addEventListener('paste', function (event) {
+        event.preventDefault();
+        const pasted = (event.clipboardData || window.clipboardData).getData('text');
+        input.value = sanitizeContactDigits(pasted);
+    });
+    input.addEventListener('keypress', function (event) {
+        if (event.ctrlKey || event.metaKey || event.altKey) return;
+        const key = event.key;
+        if (key.length === 1 && !/\d/.test(key)) {
+            event.preventDefault();
+        }
+    });
+
+    input.dataset.numericContactBound = 'true';
+    applyDigitsOnly();
+}
+
+function initNumericContactInputs() {
+    document.querySelectorAll('.numeric-contact-input, #regContact, #registerContact, #editMyContact')
+        .forEach(bindNumericContactInput);
+}
+
 function getRegisterContactError(contact) {
     if (!contact) return 'Please enter your contact number.';
-    const digits = String(contact).replace(/\D/g, '');
-    if (digits.length < 10 || digits.length > 13) {
-        return 'Please enter a valid contact number (e.g. 09XX XXX XXXX).';
+    if (!/^\d+$/.test(String(contact))) {
+        return 'Contact number must contain numbers only.';
+    }
+    if (contact.length < 10 || contact.length > 13) {
+        return 'Please enter a valid contact number (e.g. 09123456789).';
     }
     return '';
 }
@@ -3148,11 +3201,11 @@ function getRegisterFormValues() {
         ''
     ).trim();
     const location = (document.getElementById('registerLocation')?.value || '').trim();
-    const contact = (
+    const contact = sanitizeContactDigits(
         document.getElementById('registerContact')?.value ||
         document.getElementById('regContact')?.value ||
         ''
-    ).trim();
+    );
     const passwordInput = document.getElementById('regPassword')
         || document.getElementById('regPassword');
     const password = passwordInput ? passwordInput.value : '';
@@ -3255,6 +3308,7 @@ function handleSecureRegister(event) {
 
     const contactError = getRegisterContactError(contact);
     if (contactError) {
+        alert(contactError);
         return;
     }
 
@@ -3488,6 +3542,7 @@ function initRegisterThenLoginFlow() {
     injectLoginFullNameField();
     initPasswordToggleButtons();
     configureGmailEmailFields();
+    initNumericContactInputs();
 
     document.addEventListener('submit', function (event) {
         const form = event.target;

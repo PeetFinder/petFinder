@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require dirname(__DIR__) . '/bootstrap.php';
+require_once dirname(__DIR__) . '/pbi_export.php';
 
 require_admin();
 
@@ -105,6 +106,7 @@ if ($method === 'PATCH') {
             json_error('Report status was not updated in the database.', 500);
         }
 
+        sync_pbi_excel_quietly();
         json_response(['success' => true, 'report' => $report]);
     } catch (Throwable $e) {
         json_error('Failed to update status: ' . $e->getMessage(), 500);
@@ -125,6 +127,7 @@ if ($method === 'DELETE') {
             json_error('Report not found.', 404);
         }
 
+        sync_pbi_excel_quietly();
         json_response(['success' => true, 'message' => 'Report deleted.']);
     } catch (Throwable $e) {
         json_error('Failed to delete report: ' . $e->getMessage(), 500);

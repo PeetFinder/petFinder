@@ -121,8 +121,8 @@
                     </div>
                     <div class="mb-3">
                       <label class="form-label fw-semibold small">Contact Number</label>
-                      <input id="editMyContact" type="tel" class="form-control py-2"
-                        placeholder="09XX XXX XXXX" required>
+                      <input id="editMyContact" type="tel" class="form-control py-2 numeric-contact-input"
+                        placeholder="09123456789" inputmode="numeric" pattern="[0-9]{10,13}" maxlength="13" required>
                     </div>
                     <div class="mb-3">
                       <label class="form-label fw-semibold small">Your Location</label>
@@ -161,6 +161,27 @@
         </div>
         <span class="badge btn-sage px-3 py-2 fw-bold" style="font-size: 11px;">LIVE DATA</span>
       </div>
+
+      <div class="alert alert-light border small mb-3 text-start" id="pbiSyncPanel">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+          <strong>Excel + Power BI refresh</strong>
+          <button type="button" class="btn btn-sage btn-sm fw-bold" id="pbiSyncBtn">Sync Excel Now</button>
+        </div>
+        <p class="mb-2 text-muted">Ang Excel file ay may <strong>50 sample rows</strong> + <strong>real Lost Pet Reports</strong> mula sa website. Pagkatapos mag-sync, i-refresh ang Power BI Desktop.</p>
+        <div id="pbiSyncResult" class="small mb-2" style="display:none;"></div>
+        <ol class="mb-2 ps-3" id="pbiRefreshSteps">
+          <li>Isara ang <code>PetFinder_Tanauan_Batangas_Cleaned.xlsx</code> kung nakabukas.</li>
+          <li>I-click ang <strong>Sync Excel Now</strong> button sa taas.</li>
+          <li>Buksan ang <code>pbi/petfinder.pbix</code> sa Power BI Desktop.</li>
+          <li><strong>Home → Refresh</strong> · i-save ang file.</li>
+          <li><strong>Home → Publish</strong> → My Workspace → Replace existing report.</li>
+          <li>Sa Power BI Service: <strong>View semantic model → Refresh</strong>.</li>
+          <li>I-refresh ang browser sa page na ito.</li>
+        </ol>
+        <p class="mb-1"><strong>Register account</strong> → Admin &gt; Registered Users lang (hindi Excel).</p>
+        <p class="mb-0">Status: <code>/api/pbi/status.php</code> · Script: <code>pbi/refresh-powerbi.ps1</code></p>
+      </div>
+
       <iframe class="pbi-embed-frame shadow-sm" title="PetFinder Analytics Dashboard"
         src="https://app.powerbi.com/view?r=eyJrIjoiYWI3ZGVlN2ItNzI5Ni00ZGFkLThkNTctYWRjOWNkNTcwOWUyIiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D"
         allowfullscreen="true"></iframe>
@@ -182,6 +203,55 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   <script src="js/api.js"></script>
   <script src="script.js"></script>
+  <script>
+    (function () {
+      const btn = document.getElementById('pbiSyncBtn');
+      const result = document.getElementById('pbiSyncResult');
+      if (!btn || !result) return;
+
+      btn.addEventListener('click', function () {
+        btn.disabled = true;
+        btn.textContent = 'Syncing...';
+        result.style.display = 'block';
+        result.className = 'small mb-2 text-muted';
+        result.textContent = 'Syncing Excel from database...';
+
+        fetch('/petfinder/api/pbi/sync.php', { credentials: 'same-origin' })
+          .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+          .then(function (payload) {
+            const data = payload.data || {};
+            if (!payload.ok || !data.success) {
+              throw new Error((data && data.message) || 'Sync failed.');
+            }
+
+            const excel = data.excel || {};
+            let html = '<strong>Excel updated.</strong> File: <code>' + (excel.file || '') + '</code>';
+            html += ' · Rows: <strong>' + (excel.rowCount || 0) + '</strong>';
+            if (excel.excelLocked) {
+              html += '<br><span class="text-danger">Excel was open. Check the _LATEST file or close Excel and sync again.</span>';
+            }
+
+            const pbi = data.powerBi || {};
+            if (pbi.success && !pbi.skipped) {
+              html += '<br><strong>Power BI online refresh started.</strong> Still do Desktop Refresh + Publish once.';
+            } else {
+              html += '<br><strong>Next:</strong> Open Power BI Desktop → Refresh → Publish → Refresh semantic model online.';
+            }
+
+            result.className = 'small mb-2';
+            result.innerHTML = html;
+          })
+          .catch(function (err) {
+            result.className = 'small mb-2 text-danger';
+            result.textContent = (err && err.message) || 'Sync failed. Close Excel, start Apache/MySQL, then try again.';
+          })
+          .finally(function () {
+            btn.disabled = false;
+            btn.textContent = 'Sync Excel Now';
+          });
+      });
+    })();
+  </script>
 </body>
 
 </html>

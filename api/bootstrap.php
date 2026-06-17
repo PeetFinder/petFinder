@@ -129,13 +129,16 @@ function get_password_error(string $password): ?string
 
 function get_contact_error(string $contact): ?string
 {
+    $contact = trim($contact);
     if ($contact === '') {
         return 'Please enter your contact number.';
     }
-    $digits = preg_replace('/\D+/', '', $contact);
-    $len = strlen($digits ?? '');
+    if (!preg_match('/^\d+$/', $contact)) {
+        return 'Contact number must contain numbers only.';
+    }
+    $len = strlen($contact);
     if ($len < 10 || $len > 13) {
-        return 'Please enter a valid contact number (e.g. 09XX XXX XXXX).';
+        return 'Please enter a valid contact number (e.g. 09123456789).';
     }
     return null;
 }

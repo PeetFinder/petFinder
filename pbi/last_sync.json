@@ -1,0 +1,10 @@
+{
+    "success": true,
+    "message": "Power BI Excel file updated.",
+    "file": "pbi\/PetFinder_Tanauan_Batangas_Cleaned.xlsx",
+    "sheet": "PetFinder Data",
+    "exportMode": "with_sample",
+    "rowCount": 55,
+    "syncedAt": "2026-06-17T15:14:55+02:00",
+    "excelLocked": false
+}

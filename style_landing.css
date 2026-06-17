@@ -84,3 +84,115 @@
 body.info-page-active .site-footer {
   margin-top: 0;
 }
+
+/* System Overview — About page architecture section */
+.system-overview-section {
+  border-top: 4px solid var(--primary-sage);
+}
+
+.system-overview-block {
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.1rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.system-overview-ui {
+  background: linear-gradient(180deg, #e8f3ea 0%, #f5faf6 100%);
+}
+
+.system-overview-db {
+  background: linear-gradient(180deg, #e3eef8 0%, #f4f8fc 100%);
+}
+
+.system-overview-pbi {
+  background: linear-gradient(180deg, #fff6df 0%, #fffbf0 100%);
+}
+
+.system-overview-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary-sage);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.6rem;
+}
+
+.system-overview-db .system-overview-badge {
+  background: #2d7cc4;
+}
+
+.system-overview-pbi .system-overview-badge {
+  background: #e8872b;
+}
+
+.system-overview-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1.55;
+  color: #3d4f45;
+}
+
+.system-overview-list li {
+  padding-left: 1.1rem;
+  position: relative;
+  margin-bottom: 0.35rem;
+}
+
+.system-overview-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  font-weight: 800;
+  color: var(--primary-sage);
+  font-size: 0.75rem;
+}
+
+.system-overview-flow {
+  background: #f7f9f8;
+  border: 1px solid #dde5e0;
+  border-radius: var(--radius-md);
+  padding: 1rem 0.75rem;
+}
+
+.system-flow-step span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary-sage);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.8rem;
+  margin-bottom: 0.35rem;
+}
+
+.system-flow-step p {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #4a5d52;
+  margin: 0;
+  line-height: 1.35;
+}
+
+@media (min-width: 992px) {
+  .system-overview-pipeline > [class*='col-']:not(:last-child) .system-overview-block::after {
+    content: '→';
+    position: absolute;
+    right: -1.1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 800;
+    color: #9ab0a0;
+    font-size: 1.1rem;
+    z-index: 2;
+  }
+}
