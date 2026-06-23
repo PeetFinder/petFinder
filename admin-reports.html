@@ -33,7 +33,7 @@
         <h2 class="fw-bold section-title" style="color: var(--primary-sage);">Admin - Pet Lost Reports</h2>
         <span class="badge bg-light text-muted border fw-semibold" id="adminStatsBadge">Loading...</span>
       </div>
-      <p class="small text-muted mb-3">Makikita dito ang eksaktong message na ininput nila sa report (field: <em>details</em>).</p>
+      <p class="small text-muted mb-3">Shows the exact message entered in the report (field: <em>details</em>).</p>
 
       <div class="row g-3 align-items-end mb-4">
         <div class="col-md-3">
@@ -84,7 +84,6 @@
     </div>
   </div>
 
-  <!-- Reuse minimal admin modal (separate from main app modal to avoid missing IDs) -->
   <div id="adminPetDetailsModal" class="my-account-modal" style="display:none; position:fixed; inset:0; background: rgba(0,0,0,0.35); align-items:center; justify-content:center; z-index:9999;">
     <div class="my-account-box max-width-600" style="background:#fff; border-radius:14px; padding:18px; position:relative;">
       <button type="button" class="btn-close position-absolute top-0 end-0 m-3" onclick="closeAdminPetDetailsModal()"></button>
@@ -352,7 +351,7 @@
         return;
       }
 
-      tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Database hindi connected. Buksan ang site sa XAMPP URL at i-start ang Apache + MySQL.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Database not connected. Open the site via the XAMPP URL and start Apache + MySQL.</td></tr>';
     }
 
     document.addEventListener('DOMContentLoaded', function () {

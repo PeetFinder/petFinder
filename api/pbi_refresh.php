@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * Optional Power BI Service dataset refresh (after Excel sync).
- * Configure api/config.php -> powerbi section to enable.
- */
-
 function powerbi_config(): array
 {
     $config = require __DIR__ . '/config.php';
@@ -40,6 +35,20 @@ function powerbi_is_configured(): bool
 
 function powerbi_refresh_steps(): array
 {
+    $config = require __DIR__ . '/config.php';
+    $isMysql = strtolower(trim((string) ($config['pbi_source'] ?? 'mysql'))) !== 'excel';
+
+    if ($isMysql) {
+        return [
+            'Power BI reads normalized 3NF tables: users, species, breeds, pet_reports, sighting_feed.',
+            'Desktop: Get Data → MySQL → 127.0.0.1:3308 → petfinder_db → load all 5 tables.',
+            'Model: species→breeds→pet_reports; users→pet_reports; users→sighting_feed; pet_reports→sighting_feed.',
+            'Remove pbi_pet_data, Excel, and Summary from the report if still present.',
+            'Home → Refresh after posting reports on the website.',
+            'Online: On-premises Data Gateway + schedule refresh.',
+        ];
+    }
+
     return [
         'Auto-sync is enabled: new Lost Pet Reports update Excel automatically.',
         'For instant online chart updates, set powerbi.enabled => true in api/config.php with your workspace and dataset IDs.',

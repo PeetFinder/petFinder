@@ -76,27 +76,18 @@ if ($method === 'PATCH') {
     $returnedAt = $returned ? date('Y-m-d H:i:s') : null;
 
     try {
-        $stmt = db()->prepare('SELECT id FROM lost_pet_reports WHERE id = ? LIMIT 1');
+        $stmt = db()->prepare('SELECT id FROM pet_reports WHERE id = ? LIMIT 1');
         $stmt->execute([$id]);
         if (!$stmt->fetch()) {
             json_error('Report not found.', 404);
         }
 
-        try {
-            $update = db()->prepare(
-                'UPDATE lost_pet_reports SET status = ?, returned = ?, returned_at = ? WHERE id = ?'
-            );
-            $update->execute([$status, $returned, $returnedAt, $id]);
-        } catch (Throwable $statusColumnError) {
-            $update = db()->prepare(
-                'UPDATE lost_pet_reports SET returned = ?, returned_at = ? WHERE id = ?'
-            );
-            $update->execute([$returned, $returnedAt, $id]);
-        }
+        $update = db()->prepare(
+            'UPDATE pet_reports SET status = ?, returned = ?, returned_at = ? WHERE id = ?'
+        );
+        $update->execute([$status, $returned, $returnedAt, $id]);
 
-        $fetch = db()->prepare('SELECT * FROM lost_pet_reports WHERE id = ? LIMIT 1');
-        $fetch->execute([$id]);
-        $row = $fetch->fetch();
+        $row = fetch_pet_report_row($id);
         if (!$row) {
             json_error('Report not found after update.', 404);
         }
@@ -120,7 +111,7 @@ if ($method === 'DELETE') {
     }
 
     try {
-        $stmt = db()->prepare('DELETE FROM lost_pet_reports WHERE id = ?');
+        $stmt = db()->prepare('DELETE FROM pet_reports WHERE id = ?');
         $stmt->execute([$id]);
 
         if ($stmt->rowCount() === 0) {

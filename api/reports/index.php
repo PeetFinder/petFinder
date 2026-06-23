@@ -48,17 +48,19 @@ if ($method === 'POST') {
     }
 
     try {
+        $breedId = resolve_breed_id($species, $breed);
+        $ownerName = trim((string) ($user['name'] ?? $user['username'] ?? ''));
+
         $stmt = db()->prepare(
-            'INSERT INTO lost_pet_reports
-            (id, user_id, name, species, breed, location, date_lost, date_lost_display, details, photo, map_key, owner_email, owner_name, status, returned)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO pet_reports
+            (id, user_id, breed_id, name, location, date_lost, date_lost_display, details, photo, map_key, owner_email, owner_name, status, returned)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         );
         $stmt->execute([
             $id,
             (int) $user['id'],
+            $breedId,
             $name,
-            $species,
-            $breed,
             $location,
             $dateLostISO !== '' ? $dateLostISO : null,
             $dateLost,
@@ -66,23 +68,31 @@ if ($method === 'POST') {
             $photo,
             $mapKey,
             normalize_email((string) $user['email']),
-            (string) $user['name'],
+            $ownerName,
             'Lost',
             0,
         ]);
 
-        $fetch = db()->prepare('SELECT * FROM lost_pet_reports WHERE id = ? LIMIT 1');
-        $fetch->execute([$id]);
-        $row = $fetch->fetch();
-        $pipeline = pbi_auto_sync_enabled() ? sync_pbi_pipeline() : ['success' => true, 'excel' => ['success' => true, 'skipped' => true], 'powerBi' => ['skipped' => true]];
+        $row = fetch_pet_report_row($id);
+        if (!$row) {
+            json_error('Report created but could not be loaded.', 500);
+        }
+        $pipeline = pbi_auto_sync_enabled() ? sync_pbi_pipeline() : [
+            'success' => true,
+            'source' => 'mysql',
+            'model' => '3nf',
+            'database' => ['success' => true, 'skipped' => true],
+            'powerBi' => ['skipped' => true],
+        ];
 
         json_response([
             'success' => true,
-            'message' => 'Report created.',
+            'message' => 'Report saved to MySQL (3NF). Refresh Power BI Desktop to see it in charts.',
             'report' => report_to_array($row),
-            'excelSync' => $pipeline['excel'],
-            'oneDriveSync' => $pipeline['oneDrive'],
-            'powerBiSync' => $pipeline['powerBi'],
+            'pbiSync' => $pipeline['database'] ?? null,
+            'powerBiSync' => $pipeline['powerBi'] ?? null,
+            'tableCounts' => $pipeline['database']['tableCounts'] ?? null,
+            'powerBiHint' => 'Home → Refresh in Power BI. Setup guide: /api/pbi/model.php',
         ], 201);
     } catch (Throwable $e) {
         json_error('Failed to create report: ' . $e->getMessage(), 500);

@@ -1,18 +1,39 @@
 {
     "success": true,
-    "message": "Power BI CSV file updated.",
-    "file": "pbi\/PetFinder_Tanauan_Batangas_Cleaned.csv",
-    "rowCount": 6,
-    "syncedAt": "2026-06-17T18:24:46+02:00",
+    "message": "MySQL 3NF tables ready for Power BI (7 reports).",
+    "source": "mysql",
+    "model": "3nf",
+    "server": "127.0.0.1",
+    "port": 3308,
+    "database": "petfinder_db",
+    "factTable": "pet_reports",
+    "tables": [
+        "users",
+        "species",
+        "breeds",
+        "pet_reports",
+        "sighting_feed"
+    ],
+    "tableCounts": {
+        "users": 4,
+        "species": 2,
+        "breeds": 5,
+        "pet_reports": 7,
+        "sighting_feed": 0
+    },
+    "rowCount": 7,
+    "syncedAt": "2026-06-20T10:51:59+02:00",
     "powerBi": {
         "success": false,
         "skipped": true,
         "message": "Power BI online refresh is not configured. Follow the manual Desktop steps.",
         "steps": [
-            "Auto-sync is enabled: new Lost Pet Reports update Excel automatically.",
-            "For instant online chart updates, set powerbi.enabled => true in api\/config.php with your workspace and dataset IDs.",
-            "Or in Power BI Service: open your semantic model → Schedule refresh → every 15 minutes (requires On-premises data gateway for the Excel file).",
-            "Close PetFinder_Tanauan_Batangas_Cleaned.xlsx if sync fails (file locked)."
+            "Power BI reads normalized 3NF tables: users, species, breeds, pet_reports, sighting_feed.",
+            "Desktop: Get Data → MySQL → 127.0.0.1:3308 → petfinder_db → load all 5 tables.",
+            "Model: species→breeds→pet_reports; users→pet_reports; users→sighting_feed; pet_reports→sighting_feed.",
+            "Remove pbi_pet_data, Excel, and Summary from the report if still present.",
+            "Home → Refresh after posting reports on the website.",
+            "Online: On-premises Data Gateway + schedule refresh."
         ]
     }
 }

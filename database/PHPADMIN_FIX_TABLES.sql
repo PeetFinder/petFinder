@@ -1,9 +1,3 @@
--- ============================================================
--- PetFinder — GAMITIN LANG KUNG MALI ANG STRUCTURE NG TABLES
--- (hal. error sa column o foreign key)
--- WARNING: Buburahin ang lahat ng data sa users at lost_pet_reports
--- ============================================================
-
 USE petfinder_db;
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -50,4 +44,3 @@ CREATE TABLE lost_pet_reports (
   CONSTRAINT fk_reports_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
--- Pagkatapos mag-run nito, i-run ang PHPADMIN_RUN_THIS.sql (STEP 2 at STEP 3)

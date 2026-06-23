@@ -13,9 +13,7 @@ if ($id === '') {
 }
 
 if ($method === 'GET') {
-    $stmt = db()->prepare('SELECT * FROM lost_pet_reports WHERE id = ? LIMIT 1');
-    $stmt->execute([$id]);
-    $row = $stmt->fetch();
+    $row = fetch_pet_report_row($id);
     if (!$row) {
         json_error('Report not found.', 404);
     }
@@ -26,9 +24,7 @@ if ($method === 'PUT' || $method === 'PATCH') {
     $user = require_login();
     $data = read_json_body();
 
-    $stmt = db()->prepare('SELECT * FROM lost_pet_reports WHERE id = ? LIMIT 1');
-    $stmt->execute([$id]);
-    $existing = $stmt->fetch();
+    $existing = fetch_pet_report_row($id);
     if (!$existing) {
         json_error('Report not found.', 404);
     }
@@ -46,6 +42,8 @@ if ($method === 'PUT' || $method === 'PATCH') {
     $dateLostISO = trim((string) ($data['dateLostISO'] ?? $existing['date_lost']));
     $dateLost = trim((string) ($data['dateLost'] ?? $existing['date_lost_display']));
     $details = trim((string) ($data['details'] ?? $existing['details']));
+    $breedId = resolve_breed_id($species, $breed);
+
     if ($isAdmin && array_key_exists('returned', $data)) {
         $returned = (int) (bool) $data['returned'];
         $status = $returned ? 'Found' : 'Lost';
@@ -57,14 +55,13 @@ if ($method === 'PUT' || $method === 'PATCH') {
     }
 
     $update = db()->prepare(
-        'UPDATE lost_pet_reports
-         SET name = ?, species = ?, breed = ?, location = ?, date_lost = ?, date_lost_display = ?, details = ?, status = ?, returned = ?, returned_at = ?
+        'UPDATE pet_reports
+         SET name = ?, breed_id = ?, location = ?, date_lost = ?, date_lost_display = ?, details = ?, status = ?, returned = ?, returned_at = ?
          WHERE id = ?'
     );
     $update->execute([
         $name,
-        $species,
-        $breed,
+        $breedId,
         $location,
         $dateLostISO !== '' ? $dateLostISO : null,
         $dateLost,
@@ -75,17 +72,14 @@ if ($method === 'PUT' || $method === 'PATCH') {
         $id,
     ]);
 
-    $fetch = db()->prepare('SELECT * FROM lost_pet_reports WHERE id = ? LIMIT 1');
-    $fetch->execute([$id]);
+    $row = fetch_pet_report_row($id);
     sync_pbi_pipeline_quietly();
-    json_response(['success' => true, 'report' => report_to_array($fetch->fetch())]);
+    json_response(['success' => true, 'report' => report_to_array($row)]);
 }
 
 if ($method === 'DELETE') {
     $user = require_login();
-    $stmt = db()->prepare('SELECT * FROM lost_pet_reports WHERE id = ? LIMIT 1');
-    $stmt->execute([$id]);
-    $existing = $stmt->fetch();
+    $existing = fetch_pet_report_row($id);
     if (!$existing) {
         json_error('Report not found.', 404);
     }
@@ -96,7 +90,7 @@ if ($method === 'DELETE') {
         json_error('You can only delete your own reports.', 403);
     }
 
-    $del = db()->prepare('DELETE FROM lost_pet_reports WHERE id = ?');
+    $del = db()->prepare('DELETE FROM pet_reports WHERE id = ?');
     $del->execute([$id]);
     sync_pbi_pipeline_quietly();
     json_response(['success' => true, 'message' => 'Report deleted.']);

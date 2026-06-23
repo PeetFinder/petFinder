@@ -12,7 +12,6 @@ $data = read_json_body();
 $name = trim((string) ($data['name'] ?? ''));
 $email = normalize_email((string) ($data['email'] ?? ''));
 $contact = trim((string) ($data['contact'] ?? ''));
-$location = trim((string) ($data['location'] ?? ''));
 $password = (string) ($data['password'] ?? '');
 
 if ($name === '' || $email === '' || $contact === '' || $password === '') {
@@ -42,19 +41,16 @@ if (find_user_by_email($email)) {
 }
 
 try {
+    $username = username_from_registration($name, $email);
     $stmt = db()->prepare(
-        'INSERT INTO users (name, email, contact, location, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)'
+        'INSERT INTO users (username, email, password) VALUES (?, ?, ?)'
     );
     $stmt->execute([
-        $name,
+        $username,
         $email,
-        $contact,
-        $location,
         password_hash($password, PASSWORD_DEFAULT),
-        'user',
     ]);
 
-    $userId = (int) db()->lastInsertId();
     $user = find_user_by_email($email);
 
     json_response([

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 require dirname(__DIR__) . '/bootstrap.php';
 require dirname(__DIR__) . '/pbi_export.php';
-require dirname(__DIR__) . '/pbi_onedrive.php';
 require dirname(__DIR__) . '/pbi_refresh.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -13,27 +12,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'POST
 
 try {
     $pipeline = sync_pbi_pipeline();
-    $excelResult = $pipeline['excel'];
-    $powerBiResult = $pipeline['powerBi'];
+    $dbResult = $pipeline['database'] ?? [];
 
-    if (!$excelResult['success']) {
-        json_error($excelResult['message'], 500);
+    if (!$dbResult['success']) {
+        json_error($dbResult['message'] ?? 'Database sync failed.', 500);
     }
 
     json_response([
         'success' => true,
-        'excel' => [
-            'message' => $excelResult['message'],
-            'file' => $excelResult['file'],
-            'sheet' => $excelResult['sheet'] ?? 'PetFinder Data',
-            'rowCount' => $excelResult['rowCount'],
-            'syncedAt' => $excelResult['syncedAt'],
-            'excelLocked' => $excelResult['excelLocked'] ?? false,
-        ],
-        'powerBi' => $powerBiResult,
-        'oneDrive' => $pipeline['oneDrive'] ?? ['skipped' => true],
+        'source' => 'mysql',
+        'model' => $pipeline['model'] ?? '3nf',
+        'database' => $dbResult,
+        'connection' => pbi_connection_info(),
+        'powerBi' => $pipeline['powerBi'],
         'powerBiSteps' => powerbi_refresh_steps(),
-        'oneDriveSteps' => onedrive_setup_steps(),
     ]);
 } catch (Throwable $e) {
     json_error('Power BI sync failed: ' . $e->getMessage(), 500);

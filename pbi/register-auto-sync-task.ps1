@@ -1,4 +1,4 @@
-# Registers a Windows scheduled task that syncs Excel + triggers Power BI refresh every 10 minutes.
+# Registers a Windows scheduled task that checks MySQL + triggers Power BI refresh every 10 minutes.
 # Run once as Administrator:  powershell -ExecutionPolicy Bypass -File pbi\register-auto-sync-task.ps1
 
 $taskName = 'PetFinder-PBI-AutoSync'
@@ -17,7 +17,7 @@ $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -Repetiti
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
 
 try {
-    Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Settings $settings -Description 'PetFinder Excel + Power BI auto-sync' -Force | Out-Null
+    Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Settings $settings -Description 'PetFinder MySQL + Power BI auto-sync' -Force | Out-Null
     Write-Host "Scheduled task '$taskName' registered (every 10 minutes)." -ForegroundColor Green
     Write-Host "URL: $syncUrl"
 } catch {

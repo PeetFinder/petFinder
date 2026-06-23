@@ -25,6 +25,43 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+function db_config(): array
+{
+    return require __DIR__ . '/config.php';
+}
+
+function db_required_tables(): array
+{
+    return ['users', 'species', 'breeds', 'pet_reports', 'sighting_feed'];
+}
+
+function db_reports_table(): string
+{
+    return 'pet_reports';
+}
+
+function db_pbi_normalized_tables(): array
+{
+    return db_required_tables();
+}
+
+function db_missing_tables(): array
+{
+    $required = db_required_tables();
+    $stmt = db()->query('SHOW TABLES');
+    $existing = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $existing = array_map('strtolower', $existing);
+
+    $missing = [];
+    foreach ($required as $table) {
+        if (!in_array(strtolower($table), $existing, true)) {
+            $missing[] = $table;
+        }
+    }
+
+    return $missing;
+}
+
 function db(): PDO
 {
     static $pdo = null;
@@ -32,7 +69,7 @@ function db(): PDO
         return $pdo;
     }
 
-    $config = require __DIR__ . '/config.php';
+    $config = db_config();
     $port = isset($config['db_port']) ? (int) $config['db_port'] : 3306;
     $dsn = sprintf(
         'mysql:host=%s;port=%d;dbname=%s;charset=%s',
@@ -42,10 +79,23 @@ function db(): PDO
         $config['db_charset']
     );
 
-    $pdo = new PDO($dsn, $config['db_user'], $config['db_pass'], [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ]);
+    try {
+        $pdo = new PDO($dsn, $config['db_user'], $config['db_pass'], [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ]);
+    } catch (PDOException $e) {
+        throw new RuntimeException(
+            'MySQL connection failed. Check that MySQL is running in XAMPP (port '
+            . $port
+            . ') and that database "'
+            . $config['db_name']
+            . '" exists in phpMyAdmin.',
+            0,
+            $e
+        );
+    }
 
     return $pdo;
 }
@@ -143,17 +193,51 @@ function get_contact_error(string $contact): ?string
     return null;
 }
 
+function user_display_name(array $row): string
+{
+    return (string) ($row['username'] ?? $row['name'] ?? '');
+}
+
+function user_db_password(array $row): string
+{
+    return (string) ($row['password'] ?? $row['password_hash'] ?? '');
+}
+
+function user_role(array $row): string
+{
+    if (isset($row['role']) && (string) $row['role'] !== '') {
+        return (string) $row['role'];
+    }
+
+    return is_embedded_admin_email((string) ($row['email'] ?? '')) ? 'admin' : 'user';
+}
+
+function username_from_registration(string $name, string $email): string
+{
+    $username = trim($name);
+    if ($username === '') {
+        $username = (string) strstr(normalize_email($email), '@', true);
+    }
+
+    if (function_exists('mb_substr')) {
+        return mb_substr($username, 0, 50);
+    }
+
+    return substr($username, 0, 50);
+}
+
 function user_to_array(array $row): array
 {
     return [
         'id' => (int) $row['id'],
-        'name' => $row['name'],
+        'name' => user_display_name($row),
+        'username' => user_display_name($row),
         'email' => $row['email'],
         'contact' => $row['contact'] ?? '',
         'location' => $row['location'] ?? '',
-        'role' => $row['role'],
+        'role' => user_role($row),
         'registeredAt' => $row['created_at'],
-        'lastLoginAt' => $row['last_login_at'],
+        'lastLoginAt' => $row['last_login_at'] ?? null,
     ];
 }
 
@@ -183,11 +267,12 @@ function report_to_array(array $row): array
     return [
         'id' => $row['id'],
         'name' => $row['name'],
-        'species' => $row['species'],
-        'breed' => $row['breed'],
-        'location' => $row['location'],
-        'dateLost' => $row['date_lost_display'] ?: $row['date_lost'],
-        'dateLostISO' => $row['date_lost'],
+        'species' => (string) ($row['species'] ?? ''),
+        'breed' => (string) ($row['breed'] ?? ''),
+        'breedId' => isset($row['breed_id']) ? (int) $row['breed_id'] : null,
+        'location' => $row['location'] ?? '',
+        'dateLost' => $row['date_lost_display'] ?: ($row['date_lost'] ?? ''),
+        'dateLostISO' => $row['date_lost'] ?? '',
         'details' => $row['details'] ?? '',
         'photo' => $row['photo'] ?? '',
         'mapKey' => $row['map_key'] ?? '',
@@ -200,15 +285,76 @@ function report_to_array(array $row): array
     ];
 }
 
+function pet_reports_base_sql(): string
+{
+    return 'SELECT pr.id, pr.user_id, pr.breed_id, pr.name, pr.location,
+                   pr.date_lost_display, pr.date_lost, pr.details, pr.photo,
+                   pr.map_key, pr.owner_email, pr.owner_name, pr.status, pr.returned,
+                   pr.returned_at, pr.created_at,
+                   COALESCE(sp.species_name, \'\') AS species,
+                   COALESCE(br.breed_name, \'\') AS breed
+            FROM pet_reports pr
+            LEFT JOIN breeds br ON pr.breed_id = br.breed_id
+            LEFT JOIN species sp ON br.species_id = sp.species_id';
+}
+
+function fetch_pet_report_row(string $id): ?array
+{
+    $stmt = db()->prepare(pet_reports_base_sql() . ' WHERE pr.id = ? LIMIT 1');
+    $stmt->execute([$id]);
+    $row = $stmt->fetch();
+
+    return $row ?: null;
+}
+
+function resolve_breed_id(string $speciesName, string $breedName = ''): ?int
+{
+    $speciesName = trim($speciesName);
+    $breedName = trim($breedName);
+    if ($speciesName === '') {
+        return null;
+    }
+
+    $stmt = db()->prepare('SELECT species_id FROM species WHERE species_name = ? LIMIT 1');
+    $stmt->execute([$speciesName]);
+    $species = $stmt->fetch();
+
+    if (!$species) {
+        $insert = db()->prepare('INSERT INTO species (species_name) VALUES (?)');
+        $insert->execute([$speciesName]);
+        $speciesId = (int) db()->lastInsertId();
+    } else {
+        $speciesId = (int) $species['species_id'];
+    }
+
+    if ($breedName === '') {
+        return null;
+    }
+
+    $stmt = db()->prepare('SELECT breed_id FROM breeds WHERE species_id = ? AND breed_name = ? LIMIT 1');
+    $stmt->execute([$speciesId, $breedName]);
+    $breed = $stmt->fetch();
+
+    if (!$breed) {
+        $insert = db()->prepare('INSERT INTO breeds (species_id, breed_name) VALUES (?, ?)');
+        $insert->execute([$speciesId, $breedName]);
+        return (int) db()->lastInsertId();
+    }
+
+    return (int) $breed['breed_id'];
+}
+
 function set_session_user(array $user): void
 {
+    $profile = user_to_array($user);
     $_SESSION['user'] = [
-        'id' => (int) $user['id'],
-        'name' => $user['name'],
-        'email' => $user['email'],
-        'contact' => $user['contact'] ?? '',
-        'location' => $user['location'] ?? '',
-        'role' => $user['role'],
+        'id' => $profile['id'],
+        'name' => $profile['name'],
+        'username' => $profile['username'],
+        'email' => $profile['email'],
+        'contact' => $profile['contact'],
+        'location' => $profile['location'],
+        'role' => $profile['role'],
     ];
 }
 
@@ -243,13 +389,11 @@ function find_user_by_email(string $email): ?array
     return $row ?: null;
 }
 
-/** Same filters as VIEW 1 in database/phpmyadmin_queries.sql */
 function fetch_registered_clients(?string $search = ''): array
 {
-    $sql = "SELECT id, name, email, contact, location, role, created_at, last_login_at
+    $sql = "SELECT id, username, email, created_at
             FROM users
-            WHERE role = 'user'
-              AND email NOT IN (
+            WHERE email NOT IN (
                 'eriane_admin@petfinder.com',
                 'eriane_admin@gmail.com',
                 'ethan_admin@petfinder.com',
@@ -279,24 +423,9 @@ function fetch_registered_clients(?string $search = ''): array
     return $clients;
 }
 
-/** Same data as VIEW 4 in database/phpmyadmin_queries.sql */
 function fetch_lost_pet_reports(): array
 {
-    $sqlWithStatus = 'SELECT id, name, species, breed, location, date_lost_display, date_lost, details, photo,
-                map_key, owner_email, owner_name, status, returned, returned_at, created_at
-         FROM lost_pet_reports
-         ORDER BY created_at DESC';
-
-    $sqlLegacy = 'SELECT id, name, species, breed, location, date_lost_display, date_lost, details, photo,
-                map_key, owner_email, owner_name, returned, returned_at, created_at
-         FROM lost_pet_reports
-         ORDER BY created_at DESC';
-
-    try {
-        $stmt = db()->query($sqlWithStatus);
-    } catch (Throwable $e) {
-        $stmt = db()->query($sqlLegacy);
-    }
+    $stmt = db()->query(pet_reports_base_sql() . ' ORDER BY pr.created_at DESC');
 
     return array_map('report_to_array', $stmt->fetchAll());
 }

@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * Background sync endpoint for Windows Task Scheduler / browser auto-sync.
- * GET /api/pbi/auto-sync.php?key=<pbi_cron_key from config.php>
- */
-
 require dirname(__DIR__) . '/bootstrap.php';
 require dirname(__DIR__) . '/pbi_export.php';
 
@@ -32,24 +27,18 @@ if (!pbi_auto_sync_enabled()) {
 
 try {
     $pipeline = sync_pbi_pipeline();
-    $excel = $pipeline['excel'];
+    $db = $pipeline['database'] ?? [];
 
-    if (!$excel['success']) {
-        json_error($excel['message'], 500);
+    if (!$db['success']) {
+        json_error($db['message'] ?? 'Database sync failed.', 500);
     }
 
     json_response([
         'success' => true,
-        'excel' => [
-            'message' => $excel['message'],
-            'file' => $excel['file'],
-            'sheet' => $excel['sheet'] ?? 'PetFinder Data',
-            'rowCount' => $excel['rowCount'],
-            'syncedAt' => $excel['syncedAt'],
-            'excelLocked' => $excel['excelLocked'] ?? false,
-        ],
+        'source' => 'mysql',
+        'model' => $pipeline['model'] ?? '3nf',
+        'database' => $db,
         'powerBi' => $pipeline['powerBi'],
-        'oneDrive' => $pipeline['oneDrive'],
     ]);
 } catch (Throwable $e) {
     json_error('Auto-sync failed: ' . $e->getMessage(), 500);

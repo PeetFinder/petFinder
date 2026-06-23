@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * Upload synced Excel file to OneDrive via Microsoft Graph API.
- * Configure api/config.php -> onedrive section.
- */
-
 require_once __DIR__ . '/ms_graph.php';
 
 function onedrive_config(): array

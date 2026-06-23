@@ -6,7 +6,7 @@ require dirname(__DIR__) . '/bootstrap.php';
 require dirname(__DIR__) . '/pbi_export.php';
 
 $paths = pbi_paths();
-$statusPath = dirname($paths['output']) . DIRECTORY_SEPARATOR . 'last_sync.json';
+$statusPath = $paths['status'];
 $status = [];
 
 if (is_file($statusPath)) {
@@ -16,11 +16,23 @@ if (is_file($statusPath)) {
     }
 }
 
+$connection = pbi_connection_info();
+$tableCounts = null;
+
+try {
+    pbi_verify_normalized_schema();
+    $tableCounts = pbi_normalized_table_counts();
+} catch (Throwable $e) {
+    $tableCounts = null;
+}
+
 json_response([
     'success' => true,
-    'excelFile' => $paths['public_file'],
-    'fallbackExcelFile' => 'pbi/PetFinder_Tanauan_Batangas_Cleaned_LATEST.xlsx',
-    'sheet' => $paths['sheet_name'],
+    'source' => pbi_source_mode(),
+    'model' => pbi_model_mode(),
+    'connection' => $connection,
+    'tableCounts' => $tableCounts,
+    'liveRowCount' => $tableCounts['pet_reports'] ?? null,
     'lastSync' => $status,
-    'tip' => 'Auto-sync runs after every Lost Pet Report. If charts look stale, close the Excel file and wait for the next sync.',
+    'tip' => 'Power BI uses 3NF tables only. Refresh .pbix after new website reports.',
 ]);

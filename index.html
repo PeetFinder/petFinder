@@ -89,7 +89,7 @@
 </div>
 
 <body>
-  <!-- Guest Dashboard Section -->
+
   <div id="guest-dashboard" class="page-section" style="display: none;">
     <div class="custom-card p-5 my-4 text-center">
       <h2 class="fw-bold mb-3">Welcome, Guest!</h2>
@@ -312,23 +312,17 @@
         </div>
       </section>
 
-      <section class="my-4">
+      <section id="analytics-dashboard" class="my-4">
         <div class="custom-card p-4 p-md-5 text-center">
           <span class="ui-feature-icon d-inline-flex mx-auto">PBI</span>
           <h4 class="fw-bold mb-2 section-title" style="color: var(--primary-sage);">Analytics &amp; Insights Dashboard</h4>
           <p class="text-muted mb-4 mx-auto" style="max-width: 560px;">
-            View lost pet trends, barangay report activity, and community statistics in our interactive Power BI dashboard.
+            View the published Power BI report — lost pet trends, barangay activity, and community statistics.
           </p>
-          <div class="ratio ratio-16x9 shadow-sm rounded-3 overflow-hidden mb-3" style="background:#f5f7f5;">
-            <iframe id="pbiEmbedFrame" title="petfinderfinalpbi"
-              src="https://app.powerbi.com/view?r=eyJrIjoiMDNjZDAxOTMtMzU0YS00NzM2LThjM2YtNzY2N2FhZTkxZWM2IiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D"
-              frameborder="0" allowfullscreen="true"></iframe>
-          </div>
-          <a href="pbi/pbi.html" class="btn btn-sage fw-bold px-4 py-2 shadow-sm">Open Full Analytics Page</a>
+          <a href="pbi/pbi.html" class="btn btn-sage fw-bold px-4 py-2 shadow-sm">Open Analytics Dashboard</a>
         </div>
       </section>
     </div>
-
 
     <div id="report-page" class="page-section">
       <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
@@ -408,7 +402,6 @@
       </main>
     </div>
 
-
     <div id="map-page" class="page-section">
       <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
         <button type="button" class="hero-back-btn" onclick="showSection('main-page')" aria-label="Back to Home"
@@ -426,7 +419,6 @@
 
               <div id="googleMap" class="google-map-container" style="width: 100%; height: 100%; border-radius: 12px;"></div>
             </div>
-
 
             <div class="mt-4" id="belowMapDetailsContainer" style="display: none;">
               <div class="card p-4 border-0 shadow-sm animate-fade"
@@ -545,7 +537,6 @@
       </main>
     </div>
 
-
     <div id="about-page" class="page-section">
       <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
         <button type="button" class="hero-back-btn" onclick="goBackFromInfoPage()" aria-label="Back" title="Back">←</button>
@@ -625,7 +616,6 @@
       </section>
     </div>
 
-
     <div id="faqs-page" class="page-section">
       <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
         <button type="button" class="hero-back-btn" onclick="goBackFromInfoPage()" aria-label="Back" title="Back">←</button>
@@ -703,7 +693,6 @@
       </main>
     </div>
 
-
     <div id="terms-page" class="page-section">
       <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
         <button type="button" class="hero-back-btn" onclick="goBackFromInfoPage()" aria-label="Back" title="Back">←</button>
@@ -759,7 +748,6 @@
         </div>
       </main>
     </div>
-
 
     <div id="privacy-page" class="page-section">
       <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
@@ -928,7 +916,6 @@
   <script src="google_maps_config.js"></script>
   <script src="tanauan_barangays.js"></script>
   <script src="js/api.js"></script>
-  <script src="js/pbi-auto-sync.js"></script>
   <script src="script.js?v=20260613a"></script>
   <script src="map_google.js"></script>
 

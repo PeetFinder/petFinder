@@ -11,27 +11,10 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style_landing.css">
   <style>
-    .pbi-embed-card {
-      overflow: hidden;
-    }
-
-    .pbi-embed-frame {
-      width: 100%;
-      min-height: 520px;
-      height: calc(100vh - 340px);
-      max-height: 900px;
-      border: 0;
-      border-radius: var(--radius-md);
-      display: block;
-      background: #f5f7f5;
-    }
-
-    @media (max-width: 767.98px) {
-      .pbi-embed-frame {
-        min-height: 420px;
-        height: 65vh;
-      }
+    .pbi-page-wrap {
+      scroll-margin-top: 5rem;
     }
   </style>
 </head>
@@ -40,7 +23,7 @@
 
   <nav class="navbar navbar-expand-lg custom-navbar py-3 sticky-top">
     <div class="container-fluid px-4 px-lg-5">
-      <a class="navbar-brand fw-bold fs-3 d-inline-flex align-items-center gap-2" href="index.html">
+      <a class="navbar-brand fw-bold fs-3 d-inline-flex align-items-center gap-2" href="landing.html">
         <img src="LOGO.png" alt="" class="brand-logo" width="34" height="34"><span>PetFinder</span>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#pbiNavbarNav">
@@ -48,7 +31,7 @@
       </button>
       <div class="collapse navbar-collapse justify-content-between" id="pbiNavbarNav">
         <ul class="navbar-nav mx-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html#main-page">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="landing.html">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="index.html#report-page">Report Lost Pet</a></li>
           <li class="nav-item"><a class="nav-link" href="index.html#map-page">Community Map</a></li>
           <li class="nav-item"><a class="nav-link active" href="pbi/pbi.html">Analytics</a></li>
@@ -146,60 +129,51 @@
   <div class="container my-4">
 
     <header class="hero-banner hero-banner-with-back p-5 text-center my-4 shadow-sm position-relative">
-      <a href="index.html#main-page" class="hero-back-btn text-decoration-none" aria-label="Back to Home"
+      <a href="landing.html" class="hero-back-btn text-decoration-none" aria-label="Back to Home"
         title="Back to Home">←</a>
       <h1 class="display-5 fw-bold mb-2">PetFinder Analytics Dashboard</h1>
       <p class="h4 fw-light mb-0">Explore lost pet trends, barangay activity, and community insights.</p>
     </header>
 
-    <main class="custom-card p-3 p-md-4 my-4 pbi-embed-card">
-      <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 px-1">
-        <div>
-          <h4 class="fw-bold mb-1 section-title" style="color: var(--primary-sage);">Power BI Live Report</h4>
-          <p class="text-muted small mb-0">Interactive charts and statistics powered by Microsoft Power BI.</p>
-        </div>
-        <span class="badge btn-sage px-3 py-2 fw-bold" style="font-size: 11px;">LIVE DATA</span>
-      </div>
-
-      <div class="alert alert-light border small mb-3 text-start" id="pbiSyncPanel">
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
-          <strong>Auto-sync enabled</strong>
-          <button type="button" class="btn btn-outline-sage btn-sm fw-bold" id="pbiSyncBtn">Sync Now</button>
-        </div>
-        <p class="mb-2 text-muted">
-          New <strong>Lost Pet Reports</strong> automatically update Excel. Background sync runs every 5 minutes while this site is open, and every 10 minutes via Windows scheduled task.
+    <section id="analytics-dashboard" class="custom-card p-4 p-md-5 my-4 landing-pbi-section pbi-page-wrap">
+      <div class="text-center mb-4">
+        <span class="ui-feature-icon d-inline-flex mx-auto">PBI</span>
+        <h3 class="fw-bold mb-2" style="color: var(--primary-sage);">Analytics &amp; Insights Dashboard</h3>
+        <p class="text-muted small mx-auto mb-0" style="max-width: 720px; line-height: 1.65;">
+          Published Power BI report — same as on
+          <a href="https://app.powerbi.com/view?r=eyJrIjoiMDNjZDAxOTMtMzU0YS00NzM2LThjM2YtNzY2N2FhZTkxZWM2IiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D"
+            target="_blank" rel="noopener noreferrer" data-pbi-embed-link>app.powerbi.com</a>.
         </p>
-        <p class="mb-2 small" id="pbiAutoSyncStatus">Checking sync status...</p>
-        <div id="pbiSyncResult" class="small mb-2" style="display:none;"></div>
-        <p class="mb-1"><strong>Register account</strong> → Admin &gt; Registered Users only (not Excel).</p>
-        <p class="mb-2 text-muted">For instant online chart updates, enable <code>powerbi.enabled</code> in <code>api/config.php</code> or set Schedule refresh in Power BI Service (every 15 min).</p>
-
-        <details class="mt-2">
-          <summary class="fw-bold" style="cursor:pointer;">OneDrive setup (recommended for auto Power BI refresh)</summary>
-          <ol class="mb-2 mt-2 ps-3 small">
-            <li>Upload <code>PetFinder_Tanauan_Batangas_Cleaned.xlsx</code> to OneDrive (e.g. folder <code>PetFinder</code>).</li>
-            <li>Azure Portal → <strong>App registrations</strong> → New app → API permissions → <strong>Files.ReadWrite.All</strong> (Application) → Grant admin consent.</li>
-            <li>Create a <strong>client secret</strong>; copy Tenant ID, Client ID, and secret.</li>
-            <li>In <code>api/config.php</code>, set <code>onedrive.enabled</code> to <code>true</code> and fill in your Microsoft email + file path.</li>
-            <li>Power BI Desktop → change data source to the <strong>OneDrive Excel file</strong> → Publish.</li>
-            <li>Power BI Service → semantic model → <strong>Schedule refresh</strong> every 15 minutes (no gateway needed).</li>
-          </ol>
-          <p class="mb-0 small text-muted">Full steps: <code>/api/pbi/onedrive-setup.php</code></p>
-        </details>
       </div>
 
-      <iframe id="pbiEmbedFrame" class="pbi-embed-frame shadow-sm" title="petfinderfinalpbi"
-        src="https://app.powerbi.com/view?r=eyJrIjoiMDNjZDAxOTMtMzU0YS00NzM2LThjM2YtNzY2N2FhZTkxZWM2IiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D"
-        frameborder="0" allowfullscreen="true"></iframe>
-    </main>
+      <div class="landing-pbi-frame-wrap shadow-sm rounded-3 overflow-hidden mb-3 position-relative">
+        <div class="landing-pbi-loading" id="pbiEmbedLoading">Loading published dashboard...</div>
+        <iframe
+          title="petfinderfinalpbi"
+          width="600"
+          height="373.5"
+          id="pbiEmbedFrame"
+          class="landing-pbi-frame pbi-embed-frame"
+          src="https://app.powerbi.com/view?r=eyJrIjoiMDNjZDAxOTMtMzU0YS00NzM2LThjM2YtNzY2N2FhZTkxZWM2IiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D"
+          frameborder="0"
+          allowfullscreen="true"></iframe>
+      </div>
+
+      <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
+        <button type="button" class="btn btn-outline-sage btn-sm fw-bold" id="pbiReloadEmbedBtn">Reload Dashboard</button>
+        <a href="https://app.powerbi.com/view?r=eyJrIjoiMDNjZDAxOTMtMzU0YS00NzM2LThjM2YtNzY2N2FhZTkxZWM2IiwidCI6IjRkYTk4NTcxLWRjZWEtNDgzOS04ZmIxLTBiZGQ1ZGM5NjlmOSIsImMiOjEwfQ%3D%3D"
+          class="btn btn-outline-sage fw-bold px-4 py-2" target="_blank" rel="noopener noreferrer" data-pbi-embed-link>Open in Power BI</a>
+        <a href="landing.html" class="btn btn-sage fw-bold px-4 py-2 shadow-sm">Back to Homepage</a>
+      </div>
+    </section>
 
   </div>
 
   <footer class="site-footer text-center py-4">
     <div class="container-fluid px-4 px-lg-5">
       <div class="d-flex flex-wrap justify-content-center gap-4 small fw-semibold mb-2">
-        <a href="index.html#terms-page" class="text-decoration-none text-muted mx-1">Terms of Use</a>
-        <a href="index.html#privacy-page" class="text-decoration-none text-muted mx-1">Privacy Policy</a>
+        <a href="landing.html#terms-page" class="text-decoration-none text-muted mx-1">Terms of Use</a>
+        <a href="landing.html#privacy-page" class="text-decoration-none text-muted mx-1">Privacy Policy</a>
       </div>
       <p class="small text-muted mb-0 mt-2">&copy; 2026 PetFinder Hub System. All rights reserved.</p>
     </div>
@@ -209,72 +183,7 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   <script src="js/api.js"></script>
   <script src="script.js"></script>
-  <script src="js/pbi-auto-sync.js"></script>
-  <script>
-    (function () {
-      const btn = document.getElementById('pbiSyncBtn');
-      const result = document.getElementById('pbiSyncResult');
-      if (!btn || !result) return;
-
-      btn.addEventListener('click', function () {
-        btn.disabled = true;
-        btn.textContent = 'Syncing...';
-        result.style.display = 'block';
-        result.className = 'small mb-2 text-muted';
-        result.textContent = 'Syncing Excel from database...';
-
-        fetch('/petfinder/api/pbi/sync.php', { credentials: 'same-origin' })
-          .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
-          .then(function (payload) {
-            const data = payload.data || {};
-            if (!payload.ok || !data.success) {
-              throw new Error((data && data.message) || 'Sync failed.');
-            }
-
-            const excel = data.excel || {};
-            let html = '<strong>Excel updated.</strong> File: <code>' + (excel.file || '') + '</code>';
-            html += ' · Rows: <strong>' + (excel.rowCount || 0) + '</strong>';
-            if (excel.excelLocked) {
-              html += '<br><span class="text-danger">Excel was open. Check the _LATEST file or close Excel and sync again.</span>';
-            }
-
-            const od = data.oneDrive || {};
-            if (od.success && !od.skipped) {
-              html += '<br><strong>OneDrive updated.</strong>';
-              if (od.webUrl) {
-                html += ' <a href="' + od.webUrl + '" target="_blank" rel="noopener">Open file</a>';
-              }
-            } else if (od.skipped) {
-              html += '<br>OneDrive: not configured (see setup below).';
-            } else if (od.message) {
-              html += '<br><span class="text-warning">OneDrive: ' + od.message + '</span>';
-            }
-
-            const pbi = data.powerBi || {};
-            if (pbi.success && !pbi.skipped) {
-              html += '<br><strong>Power BI online refresh started.</strong> Charts will update shortly.';
-            } else {
-              html += '<br>Excel is updated. Online charts refresh on the next scheduled sync.';
-            }
-
-            if (window.PetFinderPbiAutoSync) {
-              window.PetFinderPbiAutoSync.reloadFrames();
-            }
-
-            result.className = 'small mb-2';
-            result.innerHTML = html;
-          })
-          .catch(function (err) {
-            result.className = 'small mb-2 text-danger';
-            result.textContent = (err && err.message) || 'Sync failed. Close Excel, start Apache/MySQL, then try again.';
-          })
-          .finally(function () {
-            btn.disabled = false;
-            btn.textContent = 'Sync Now';
-          });
-      });
-    })();
-  </script>
+  <script src="js/pbi-embed.js"></script>
 </body>
 
 </html>

@@ -26,7 +26,7 @@
         <h2 class="fw-bold mb-0 section-title" style="color: var(--primary-sage);">Registered Users / Clients</h2>
         <span class="badge bg-light text-muted border fw-semibold" id="adminUsersStatsBadge">Loading...</span>
       </div>
-      <p class="small text-muted mb-4">Listahan ng mga nag-register na pet owners at clients sa PetFinder.</p>
+      <p class="small text-muted mb-4">List of registered pet owners and clients on PetFinder.</p>
 
       <div class="row g-3 align-items-end mb-4">
         <div class="col-md-5">
@@ -131,7 +131,7 @@
         return;
       }
 
-      tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">Database hindi connected. Buksan ang site sa XAMPP URL at i-start ang Apache + MySQL.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">Database not connected. Open the site via the XAMPP URL and start Apache + MySQL.</td></tr>';
     }
 
     document.addEventListener('DOMContentLoaded', function () {

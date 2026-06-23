@@ -9,16 +9,12 @@ function filterBreeds(speciesSelectId, breedSelectId) {
         'Cat': ['Puspin', 'Siamese', 'Persian', 'Maine Coon', 'British Shorthair']
     };
 
-    // New UI supports:
-    // - input[list] + datalist for typing
-    // - select for legacy pages
     const datalistId = breedEl && breedEl.getAttribute ? breedEl.getAttribute('list') : null;
 
     if (breedEl && datalistId) {
         const datalistEl = document.getElementById(datalistId);
         if (!datalistEl) return;
 
-        // reset
         datalistEl.innerHTML = '';
 
         if (selectedSpecies !== 'Others' && breedData[selectedSpecies]) {
@@ -29,9 +25,8 @@ function filterBreeds(speciesSelectId, breedSelectId) {
             });
         }
 
-        // keep user-typed value only if it matches the new suggestions.
         if (selectedSpecies === 'Others') {
-            // allow free-typing; keep value
+
             return;
         }
 
@@ -42,7 +37,6 @@ function filterBreeds(speciesSelectId, breedSelectId) {
         return;
     }
 
-    // Legacy <select> fallback
     if (!breedEl) return;
 
     const breedSelect = breedEl;
@@ -62,20 +56,17 @@ function filterBreeds(speciesSelectId, breedSelectId) {
     }
 }
 
-
-
 function redirectToOwnerHomepageAfterReport() {
     const form = document.getElementById('lostPetForm');
     const breedSelect = document.getElementById('reportBreed');
 
     if (form) form.reset();
     if (breedSelect) {
-        // <select> legacy reset
+
         if (typeof breedSelect.innerHTML === 'string') {
             breedSelect.innerHTML = '<option value="" selected disabled>Select Breed</option>';
         }
 
-        // <input list> reset
         if (breedSelect.tagName === 'INPUT') {
             const datalistId = breedSelect.getAttribute('list');
             const datalistEl = datalistId ? document.getElementById(datalistId) : null;
@@ -161,7 +152,7 @@ function submitLostPetReport(event) {
                 redirectToOwnerHomepageAfterReport();
             })
             .catch(function () {
-                // Stay on report form when database save fails.
+
             });
     });
 }
@@ -185,7 +176,6 @@ function getReportCardImageHtml(report) {
     }
     return getSpeciesBadgeHtml(report.species);
 }
-
 
 function displayAuthenticatedUser(fullName, email, location, contact) {
     const banner = document.getElementById('user-welcome-banner');
@@ -222,7 +212,7 @@ function displayAuthenticatedUser(fullName, email, location, contact) {
         navAuthBtn.classList.remove('auth-hidden');
         navAuthBtn.textContent = 'Logout';
         navAuthBtn.onclick = logoutUser;
-        
+
         const loginBtn = document.getElementById('nav-login-btn');
         const registerBtn = document.getElementById('nav-register-btn');
         if (loginBtn) loginBtn.classList.add('auth-hidden');
@@ -409,13 +399,13 @@ document.addEventListener('DOMContentLoaded', function () {
     positionUserBannerAboveHero();
     replaceCombinedAuthButtons();
     createNavActionButtons();
-    
+
     const currentUser = getCurrentUser();
     if (currentUser) {
         const navAuthBtn = document.getElementById('nav-auth-btn');
         const loginBtn = document.getElementById('nav-login-btn');
         const registerBtn = document.getElementById('nav-register-btn');
-        
+
         if (navAuthBtn) {
             navAuthBtn.classList.remove('auth-hidden');
             navAuthBtn.textContent = 'Logout';
@@ -423,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (loginBtn) loginBtn.classList.add('auth-hidden');
         if (registerBtn) registerBtn.classList.add('auth-hidden');
-        
+
         displayMyAccountProfile();
     }
 });
@@ -891,9 +881,6 @@ function initAdminAuthPage() {
     }
 }
 
-
-
-
 function displayMyAccountProfile() {
     const user = getCurrentUser();
     if (!user) return;
@@ -1048,8 +1035,6 @@ function selectMapPin(locationKey) {
     const marker = document.getElementById('liveRadarMarker');
     const belowContainer = document.getElementById('belowMapDetailsContainer');
 
-    // If the key belongs to a live incident pin (created from Report a Lost Pet),
-    // show its exact info on the map panel.
     const incidentPin = (typeof mapPinIncidents === 'object' && mapPinIncidents
         && mapPinIncidents[locationKey]) ? mapPinIncidents[locationKey] : null;
     const data = incidentPin || pinMockDatabase[locationKey];
@@ -1060,19 +1045,17 @@ function selectMapPin(locationKey) {
         marker.style.transform = 'translate(-50%, -50%) scale(1)';
     }
 
-    // Sync camera if supported (Google preferred, fallback to OSM)
     if (incidentPin && typeof window.focusGoogleMapPin === 'function') {
         window.focusGoogleMapPin(locationKey);
     } else if (typeof window.focusGoogleMapPin === 'function') {
-        // barangay pins
+
         window.focusGoogleMapPin(locationKey);
     } else if (typeof window.focusOSMPin === 'function' && typeof window.mapPinIncidents === 'object') {
         window.focusOSMPin(locationKey);
     }
 
     if (data && marker && belowContainer) {
-        // Live incident pins store fields like: title/emoji/name/breed/log.
-        // Barangay mock pins store similar fields too.
+
         const titleEl = document.getElementById('belowMapTitle');
         const emojiEl = document.getElementById('belowMapPetEmoji');
         const nameEl = document.getElementById('belowMapPetName');
@@ -2020,8 +2003,6 @@ function handleDeletePetReport() {
     deleteLostPetReportById(reportIdToDelete);
 }
 
-
-
 function createLostPetReport(petName, species, breed, location, dateInput, reportDetails, photoData) {
     const user = getCurrentUser();
     const newReport = {
@@ -2060,13 +2041,15 @@ function createLostPetReport(petName, species, breed, location, dateInput, repor
 
     if (typeof usePetFinderBackend === 'function' && usePetFinderBackend()) {
         return PetFinderAPI.createReport(newReport).then(function (res) {
-            const excelSync = res && res.excelSync;
-            if (excelSync && excelSync.success === false) {
-                alert('Report saved to the database, but Excel was not updated.\n\n' +
-                    (excelSync.message || 'Close the Excel file if it is open. Auto-sync will retry shortly.'));
-            } else if (excelSync && excelSync.excelLocked) {
-                alert('Report saved. Excel was open so data was written to the LATEST file.\n\nClose Excel and auto-sync will update the main file.');
+            const pbiSync = (res && res.pbiSync) || (res && res.excelSync);
+            if (pbiSync && pbiSync.success === false) {
+                alert('Report saved to the database, but Power BI sync check failed.\n\n' +
+                    (pbiSync.message || 'Make sure MySQL is running. Refresh Power BI manually.'));
             }
+            if (window.PetFinderPbiLiveStats && typeof window.PetFinderPbiLiveStats.refreshNow === 'function') {
+                window.PetFinderPbiLiveStats.refreshNow();
+            }
+            window.dispatchEvent(new CustomEvent('petfinder-report-saved', { detail: res }));
             return finishCreate(res.report || newReport);
         }).catch(function (err) {
             alert((err && err.message) || 'Failed to save your report to the database. Make sure you are logged in and MySQL is running.');
@@ -2317,7 +2300,6 @@ document.addEventListener('DOMContentLoaded', function () {
         renderOwnerNotificationsPanel();
     }, 50);
 });
-
 
 function isUserSessionLoggedIn() {
     return sessionStorage.getItem('petfinderLoggedIn') === 'true' && !!getCurrentUser();
@@ -2617,7 +2599,6 @@ function initHideLandingNavLoginRegister() {
     };
 })();
 
-// ========== REGISTER FIRST, THEN LOGIN (required verification) ==========
 function getRegisteredAccount() {
     const stored = localStorage.getItem('petfinderRegisteredAccount');
     if (stored) return JSON.parse(stored);
@@ -4018,8 +3999,6 @@ function handleDeleteMapPin(locationKey) {
 
 }
 
-
-
 function initMapPinIncidentsCRUD() {
     syncAllLostPetReportsToMap();
 
@@ -4125,7 +4104,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// ========== OWNER PET NOTIFICATIONS (per user only) ==========
 function getAllOwnerNotifications() {
     try {
         return JSON.parse(localStorage.getItem('petfinderOwnerNotifications') || '[]');
@@ -4453,7 +4431,6 @@ function bindDistinctDetailsWarning() {
     textarea.addEventListener('input', update);
     textarea.addEventListener('keyup', update);
 
-    // initial
     update();
 }
 

@@ -2,10 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * Shared Microsoft Graph helpers (OneDrive upload, Power BI refresh, etc.).
- */
-
 function ms_graph_http_request(string $method, string $url, $body = null, array $headers = []): array
 {
     if (!function_exists('curl_init')) {

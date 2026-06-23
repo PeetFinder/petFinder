@@ -1,7 +1,4 @@
-/*
-  Google Maps integration for PetFinder — Tanauan City, Batangas
-  Shows all 48 barangays + lost-pet incident pins.
-*/
+
 
 (function () {
   const CENTER = window.TANAUAN_CITY_CENTER || { lat: 14.0853, lng: 121.1528, label: 'Tanauan City, Batangas' };
@@ -621,7 +618,6 @@
     return ensureMapInitialized();
   };
 
-  // Backward compatibility with previous OSM integration
   window.updateOSMMarkers = window.updateGoogleMapMarkers;
   window.focusOSMPin = window.focusGoogleMapPin;
   window.__osmReady = window.__googleMapReady;

@@ -32,7 +32,7 @@
 
     window.PETFINDER_BASE = BASE;
     window.petfinderUrl = function (page) {
-        page = String(page || '').replace(/^\//, '');
+        page = String(page || '').replace(/^\
         return BASE + page;
     };
 })();

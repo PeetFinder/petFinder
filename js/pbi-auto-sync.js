@@ -1,6 +1,4 @@
-/**
- * Background Excel + Power BI sync. Runs on page load and every few minutes.
- */
+
 (function () {
   const SYNC_KEY = 'petfinder-local-sync';
   const INTERVAL_MS = 5 * 60 * 1000;
@@ -8,6 +6,7 @@
   const STATUS_URL = '/petfinder/api/pbi/status.php';
 
   let lastSyncedAt = null;
+  let lastRowCount = null;
   let running = false;
 
   function reloadPowerBiIframes() {
@@ -20,19 +19,14 @@
 
   function updateStatusBadge(data) {
     const badge = document.getElementById('pbiAutoSyncStatus');
-    if (!badge || !data || !data.excel) return;
+    if (!badge) return;
 
-    const rows = data.excel.rowCount || 0;
-    const time = data.excel.syncedAt ? new Date(data.excel.syncedAt).toLocaleString() : 'just now';
-    badge.textContent = 'Last sync: ' + time + ' · ' + rows + ' rows';
+    const db = data.database || data.excel || data.lastSync || {};
+    const rows = db.rowCount || data.liveRowCount || 0;
+    const time = db.syncedAt ? new Date(db.syncedAt).toLocaleString() : 'just now';
+    badge.textContent = 'MySQL: ' + rows + ' reports · Last check: ' + time;
     badge.classList.remove('text-danger');
     badge.classList.add('text-success');
-
-    if (data.excel.excelLocked) {
-      badge.classList.remove('text-success');
-      badge.classList.add('text-danger');
-      badge.textContent += ' (Excel file was open — close it and sync again)';
-    }
   }
 
   function runAutoSync() {
@@ -49,7 +43,8 @@
         const data = payload.data || {};
         if (!payload.ok || !data.success) return;
 
-        const syncedAt = data.excel && data.excel.syncedAt;
+        const db = data.database || data.excel || {};
+        const syncedAt = db.syncedAt;
         const isNewSync = syncedAt && syncedAt !== lastSyncedAt;
         if (isNewSync) {
           lastSyncedAt = syncedAt;
@@ -69,13 +64,22 @@
   }
 
   function loadLastStatus() {
-    fetch(STATUS_URL, { credentials: 'same-origin' })
+    fetch(STATUS_URL, { credentials: 'same-origin', cache: 'no-store' })
       .then(function (res) { return res.json(); })
       .then(function (data) {
+        const count = data.liveRowCount != null ? data.liveRowCount : null;
+        if (count != null && lastRowCount !== null && count !== lastRowCount) {
+          reloadPowerBiIframes();
+        }
+        if (count != null) {
+          lastRowCount = count;
+        }
         const last = data && data.lastSync;
         if (last && last.syncedAt) {
           lastSyncedAt = last.syncedAt;
-          updateStatusBadge({ excel: last });
+          updateStatusBadge({ lastSync: last, liveRowCount: data.liveRowCount });
+        } else if (data.liveRowCount != null) {
+          updateStatusBadge({ liveRowCount: data.liveRowCount });
         }
       })
       .catch(function () { });
@@ -89,4 +93,5 @@
   loadLastStatus();
   setTimeout(runAutoSync, 2500);
   setInterval(runAutoSync, INTERVAL_MS);
+  setInterval(loadLastStatus, 30000);
 })();

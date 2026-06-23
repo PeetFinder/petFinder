@@ -17,28 +17,18 @@ if ($email === '' || $password === '') {
 }
 
 $user = find_user_by_email($email);
-if (!$user || ($user['role'] ?? '') !== 'admin') {
+if (!$user || !is_embedded_admin_email($email)) {
     json_error('Invalid admin credentials. Please check your admin email and password.');
 }
 
-if (!password_verify($password, (string) $user['password_hash'])) {
+if (!password_verify($password, user_db_password($user))) {
     json_error('Invalid admin credentials. Please check your admin email and password.');
 }
-
-$stmt = db()->prepare('UPDATE users SET last_login_at = NOW() WHERE id = ?');
-$stmt->execute([(int) $user['id']]);
 
 set_session_user($user);
 
 json_response([
     'success' => true,
     'message' => 'Admin login successful.',
-    'user' => [
-        'id' => (int) $user['id'],
-        'name' => $user['name'],
-        'email' => $user['email'],
-        'contact' => $user['contact'] ?? '',
-        'location' => $user['location'] ?? '',
-        'role' => $user['role'],
-    ],
+    'user' => user_to_array($user),
 ]);

@@ -1,4 +1,4 @@
-/* Landing page extras — olive theme aligned with admin panel */
+
 
 .landing-body {
   background: linear-gradient(135deg, #2f3e33 0%, #3d5244 45%, #6e8e76 100%);
@@ -85,7 +85,6 @@ body.info-page-active .site-footer {
   margin-top: 0;
 }
 
-/* System Overview — About page architecture section */
 .system-overview-section {
   border-top: 4px solid var(--primary-sage);
 }
@@ -194,5 +193,68 @@ body.info-page-active .site-footer {
     color: #9ab0a0;
     font-size: 1.1rem;
     z-index: 2;
+  }
+}
+
+.landing-pbi-stat-card {
+  background: rgba(110, 142, 118, 0.08);
+  border: 1px solid rgba(110, 142, 118, 0.2);
+  border-radius: 12px;
+  padding: 0.85rem 0.5rem;
+}
+
+.landing-pbi-stat-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--primary-sage);
+  line-height: 1.1;
+}
+
+.landing-pbi-stat-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #5a6b60;
+  margin-top: 0.25rem;
+}
+
+.landing-pbi-section {
+  scroll-margin-top: 5rem;
+}
+
+.landing-pbi-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245, 247, 245, 0.92);
+  color: #5a6b60;
+  font-size: 0.9rem;
+  font-weight: 600;
+  z-index: 2;
+}
+
+.landing-pbi-frame-wrap {
+  background: #f5f7f5;
+  border: 1px solid rgba(110, 142, 118, 0.2);
+  width: 100%;
+  max-width: 100%;
+  min-height: 420px;
+}
+
+.landing-pbi-frame {
+  display: block;
+  width: 100%;
+  height: 560px;
+  min-height: 420px;
+  border: 0;
+}
+
+@media (max-width: 767.98px) {
+  .landing-pbi-frame {
+    height: 373.5px;
+    min-height: 373.5px;
   }
 }
